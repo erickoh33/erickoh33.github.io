@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Financial Calculators | Eric Koh, Insurance &amp; Takaful Planning in Klang Valley</title>
+  <meta name="description" content="Free, easy calculators to estimate your protection gap, retirement savings, your children's education fund and future medical costs, in RM. For illustration only.">
+  <meta property="og:title" content="Free financial calculators by Eric Koh">
+  <meta property="og:description" content="Estimate your coverage gap, retirement needs, education fund and medical cost inflation in a few taps.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0E6E6A">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal-900:#083D3B; --teal-800:#0B504D; --teal-700:#0E6E6A; --teal-500:#159A93; --teal-100:#DDF2EF; --teal-50:#EFF8F6;
+      --coral-600:#D95F57; --coral-500:#E8776F; --coral-100:#FCE6E3; --coral-50:#FFF4F2;
+      --ink:#132A29; --muted:#566B69; --line:#E3ECEA; --cream:#FBF8F4; --white:#fff;
+      --radius:18px; --shadow:0 10px 30px -12px rgba(8,61,59,.18); --shadow-lg:0 24px 60px -20px rgba(8,61,59,.30);
+      --serif:'Fraunces', Georgia, serif; --sans:'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.6;font-size:17px;-webkit-font-smoothing:antialiased}
+    img,svg{display:block;max-width:100%}
+    a{color:inherit}
+    button,input{font:inherit;color:inherit}
+    .wrap{width:min(1120px, 100% - 40px);margin-inline:auto}
+    h1,h2,h3{line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+    h2{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.1rem);font-weight:700;color:var(--teal-900)}
+    h3{font-size:1.06rem;font-weight:700}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-700);background:var(--teal-100);padding:6px 12px;border-radius:999px;margin-bottom:16px}
+    .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--coral-500);box-shadow:0 0 0 3px rgba(232,119,111,.25)}
+    .lead{color:var(--muted);font-size:1.08rem;max-width:660px;margin-top:14px;text-wrap:pretty}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:1rem;text-decoration:none;padding:15px 26px;border-radius:999px;transition:transform .15s ease, box-shadow .15s ease, background .15s ease;border:2px solid transparent;cursor:pointer;white-space:nowrap}
+    .btn:hover{transform:translateY(-2px)}
+    .btn:focus-visible{outline:3px solid var(--coral-500);outline-offset:3px}
+    .btn-primary{background:var(--coral-500);color:#fff;box-shadow:0 10px 24px -10px rgba(217,95,87,.7)}
+    .btn-primary:hover{background:var(--coral-600)}
+    .btn-ghost{background:transparent;color:var(--teal-800);border-color:rgba(14,110,106,.3)}
+    .btn-ghost:hover{background:var(--teal-50)}
+    .btn svg{width:20px;height:20px;flex:none}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:rgba(251,248,244,.85);backdrop-filter:saturate(160%) blur(10px);-webkit-backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid rgba(227,236,234,.8)}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700}
+    .brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--teal-700),var(--teal-500));color:#fff;display:grid;place-items:center;font-family:var(--serif);font-size:1rem;letter-spacing:.02em}
+    .brand small{display:block;font-weight:500;color:var(--muted);font-size:.75rem;line-height:1.1}
+    .nav .btn{padding:10px 18px;font-size:.92rem}
+
+    /* Hero */
+    .hero{position:relative;overflow:hidden;padding:60px 0 36px;text-align:center}
+    .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(14,110,106,.13) 1.2px, transparent 1.2px);background-size:22px 22px;mask-image:radial-gradient(ellipse 60% 80% at 50% 30%, #000 25%, transparent 75%);-webkit-mask-image:radial-gradient(ellipse 60% 80% at 50% 30%, #000 25%, transparent 75%);pointer-events:none}
+    .hero::after{content:"";position:absolute;width:480px;height:480px;right:-160px;top:-180px;border-radius:50%;background:radial-gradient(circle, rgba(232,119,111,.18), transparent 65%);pointer-events:none}
+    .hero .wrap{position:relative}
+    .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,5vw,3.4rem);color:var(--teal-900)}
+    .hero h1 .accent{color:var(--coral-500);position:relative;white-space:nowrap}
+    .hero h1 .accent::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.22em;background:var(--coral-100);z-index:-1;border-radius:4px}
+    .hero .lead{margin-inline:auto}
+
+    /* Tabs */
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .tab{display:flex;align-items:flex-start;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
+    .tab:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .tab:focus-visible{outline:3px solid var(--coral-500);outline-offset:3px}
+    .tab .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--teal-100);color:var(--teal-700)}
+    .tab .icon svg{width:21px;height:21px}
+    .tab b{display:block;font-size:.98rem;line-height:1.25}
+    .tab small{display:block;color:var(--muted);font-size:.8rem;line-height:1.35;margin-top:3px}
+    .tab[aria-selected="true"]{border-color:var(--teal-700);background:linear-gradient(160deg,#fff 40%,var(--teal-50));box-shadow:var(--shadow)}
+    .tab[aria-selected="true"] .icon{background:var(--teal-700);color:#fff}
+
+    /* Panels */
+    .panel{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:start}
+    .panel[hidden]{display:none}
+    .panel{scroll-margin-top:90px}
+    #medical .results{position:static}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 1px 0 rgba(8,61,59,.03)}
+    .panel-head{margin-bottom:18px}
+    .panel-head p{color:var(--muted);margin-top:6px;font-size:.96rem}
+    fieldset{border:0;border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+    fieldset:first-of-type{border-top:0;padding-top:0;margin-top:0}
+    legend{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-700);padding:0;margin-bottom:12px;float:left;width:100%}
+    legend + *{clear:both}
+    .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+    .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+    /* Line up labels, inputs and hints across each row, even when a label wraps */
+    @supports (grid-template-rows:subgrid){
+      .fields{row-gap:0}
+      .field{display:grid;grid-row:span 3;grid-template-rows:subgrid;gap:0;padding-bottom:14px}
+      .field label{align-self:end;padding-bottom:6px}
+      .field .input + .hint{padding-top:6px}
+      .field.full > .hint:first-child{padding-bottom:6px;align-self:end}
+    }
+    .field.full{grid-column:1 / -1}
+    .field label{font-size:.88rem;font-weight:600;color:var(--ink);line-height:1.3}
+    .field .hint{font-size:.78rem;color:var(--muted);line-height:1.35}
+    .input{display:flex;align-items:center;min-width:0;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;transition:border-color .15s, box-shadow .15s, background .15s}
+    .input:focus-within{border-color:var(--teal-500);background:#fff;box-shadow:0 0 0 4px rgba(21,154,147,.12)}
+    .input span{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0 0 0 12px;flex:none}
+    .input span.suf{padding:0 12px 0 0}
+    .input input{flex:1;min-width:0;border:0;background:transparent;padding:11px 12px;font-size:16px;font-weight:600;outline:none;-moz-appearance:textfield}
+    .input input::-webkit-outer-spin-button,.input input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .presets{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{border:1.5px solid rgba(14,110,106,.3);background:#fff;color:var(--teal-800);border-radius:999px;padding:7px 13px;font-size:.84rem;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
+    .chip:hover{background:var(--teal-50)}
+    .chip[aria-pressed="true"]{background:var(--teal-700);border-color:var(--teal-700);color:#fff}
+    .chip:focus-visible{outline:3px solid var(--coral-500);outline-offset:2px}
+    .assume{display:flex;gap:10px;align-items:flex-start;margin-top:20px;padding:12px 14px;border-radius:12px;background:var(--coral-50);border:1px dashed rgba(232,119,111,.45);font-size:.84rem;color:var(--muted)}
+    .assume svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--coral-600)}
+
+    /* Results */
+    .results{position:sticky;top:88px;border-color:rgba(14,110,106,.35);background:linear-gradient(170deg,#fff 55%,var(--teal-50))}
+    .results .eyebrow{margin-bottom:12px}
+    .big{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,4vw,2.6rem);line-height:1.1;color:var(--coral-600);letter-spacing:-.01em;word-break:break-word}
+    .big.ok{color:var(--teal-700)}
+    .big-label{color:var(--muted);font-size:.94rem;margin-top:4px}
+    .rows{list-style:none;margin-top:18px;border-top:1px solid var(--line)}
+    .rows li{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+    .rows li span{color:var(--muted)}
+    .rows li b{font-weight:700;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .rows li.total b{color:var(--teal-900);font-size:1rem}
+    .rows li.gap b{color:var(--coral-600)}
+    .rows li.sub{padding-top:14px}
+    .rows li.sub span{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-700)}
+    .meter{margin-top:18px}
+    .meter-top{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:6px}
+    .meter-top b{color:var(--teal-800)}
+    .meter-bar{height:12px;border-radius:999px;background:var(--coral-100);overflow:hidden}
+    .meter-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--teal-700),var(--teal-500));transition:width .4s ease}
+    .note{margin-top:14px;font-size:.86rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+    .note.warn{background:var(--coral-50);border-color:rgba(232,119,111,.4);color:var(--coral-600);font-weight:600}
+    .how{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 14px}
+    .how summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;font-weight:700;font-size:.9rem;color:var(--teal-800)}
+    .how summary::-webkit-details-marker{display:none}
+    .how summary::after{content:"+";flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--teal-100);color:var(--teal-700);font-size:1rem;transition:transform .2s}
+    .how[open] summary::after{transform:rotate(45deg);background:var(--coral-100);color:var(--coral-600)}
+    .how div{font-size:.86rem;color:var(--muted);padding-bottom:14px}
+    .how div p + p{margin-top:8px}
+    .how ol{margin:6px 0 0 18px}
+    .wa{width:100%;margin-top:18px;white-space:normal;text-align:center;line-height:1.3}
+    .mini-disc{margin-top:10px;font-size:.76rem;color:var(--muted);text-align:center}
+
+    /* Medical chart */
+    .chart-card{grid-column:1 / -1}
+    .chart-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .chart-head p{color:var(--muted);font-size:.9rem}
+    .legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted)}
+    .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle;background:var(--teal-500)}
+    .legend i.c{background:var(--coral-500)}
+    .chart{position:relative;display:flex;align-items:flex-end;gap:4px;height:260px;padding:26px 0 26px;border-bottom:1px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% 25%;background-position:0 -1px}
+    .bar{position:relative;flex:1;min-width:0;height:100%;display:flex;align-items:flex-end}
+    .bar i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--teal-500),var(--teal-700));transition:height .35s ease;min-height:2px}
+    .bar.last i{background:linear-gradient(180deg,var(--coral-500),var(--coral-600))}
+    .bar.now i{background:linear-gradient(180deg,#9FD9D3,var(--teal-500))}
+    .bar em{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-style:normal;font-family:var(--mono);font-size:.68rem;color:var(--muted);white-space:nowrap}
+    .bar:hover i{filter:brightness(1.1)}
+    .bar .tip{display:none;position:absolute;bottom:calc(var(--h) + 6px);left:50%;transform:translateX(-50%);background:var(--teal-900);color:#fff;font-size:.72rem;font-weight:600;padding:4px 8px;border-radius:8px;white-space:nowrap;pointer-events:none;z-index:2}
+    .bar.r .tip{left:auto;right:0;transform:none}
+    .bar:hover .tip{display:block}
+    .bar .val{position:absolute;bottom:calc(var(--h) + 6px);right:0;font-family:var(--mono);font-size:.68rem;font-weight:500;color:var(--coral-600);white-space:nowrap}
+    .table-wrap{margin-top:22px;max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+    table{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums}
+    th,td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+    th:first-child,td:first-child{text-align:left}
+    thead th{position:sticky;top:0;background:var(--teal-50);font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-700);font-weight:500}
+    tbody tr:nth-child(even){background:var(--cream)}
+    tbody tr:last-child td{font-weight:700;color:var(--coral-600)}
+
+    /* Disclaimer */
+    .disclaimer{margin-top:40px;display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left:4px solid var(--coral-500);border-radius:var(--radius);padding:22px 24px}
+    .disclaimer .icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--coral-100);color:var(--coral-600)}
+    .disclaimer .icon svg{width:22px;height:22px}
+    .disclaimer p{color:var(--muted);font-size:.92rem;margin-top:4px}
+
+    /* CTA strip */
+    .cta-strip{margin-top:28px;position:relative;overflow:hidden;border-radius:24px;padding:36px 40px;color:#fff;background:linear-gradient(135deg,var(--teal-800),var(--teal-700) 55%,var(--teal-500));display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+    .cta-strip::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1px);background-size:20px 20px;mask-image:radial-gradient(ellipse at 90% 20%,#000,transparent 55%);-webkit-mask-image:radial-gradient(ellipse at 90% 20%,#000,transparent 55%);pointer-events:none}
+    .cta-strip > *{position:relative;z-index:1}
+    .cta-strip h2{color:#fff;font-size:clamp(1.4rem,2.6vw,1.8rem)}
+    .cta-strip p{color:rgba(255,255,255,.8);margin-top:6px;font-size:.96rem;max-width:560px}
+    .cta-strip .btns{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-light{background:#fff;color:var(--teal-800)}
+    .btn-outline-light{border-color:rgba(255,255,255,.45);color:#fff}
+    .btn-outline-light:hover{background:rgba(255,255,255,.1)}
+
+    main{padding-bottom:56px}
+    footer{padding:32px 0 40px;color:var(--muted);font-size:.86rem}
+    .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:24px}
+    .foot nav{display:flex;gap:18px;flex-wrap:wrap}
+    .foot a{text-decoration:none;font-weight:600;color:var(--teal-700)}
+    .foot a:hover{text-decoration:underline}
+
+    /* Responsive */
+    @media (max-width:960px){
+      .tabs{grid-template-columns:1fr 1fr}
+      .panel{grid-template-columns:1fr}
+      .results{position:static}
+    }
+    @media (max-width:640px){
+      body{font-size:16px}
+      .wrap{width:min(1120px, 100% - 32px)}
+      .brand small{display:none}
+      .nav .btn .long{display:none}
+      .hero{padding:40px 0 28px}
+      .hero h1 .accent{white-space:normal}
+      .tabs{gap:10px;margin-bottom:20px}
+      .tab{flex-direction:column;gap:8px;padding:13px}
+      .tab .icon{width:34px;height:34px;border-radius:10px}
+      .tab .icon svg{width:18px;height:18px}
+      .tab small{display:none}
+      .card{padding:22px 18px}
+      .fields{column-gap:12px}
+      .fields.stack{grid-template-columns:minmax(0,1fr)}
+      .chart{height:200px;gap:2px}
+      .bar i{border-radius:3px 3px 1px 1px}
+      .bar .val{display:none}
+      th,td{padding:8px 10px}
+      .disclaimer{padding:18px;gap:12px}
+      .disclaimer .icon{width:38px;height:38px}
+      .cta-strip{padding:28px 22px;border-radius:22px}
+      .cta-strip .btns,.cta-strip .btn{width:100%}
+      .foot{flex-direction:column;gap:6px}
+    }
+    @media (max-width:360px){
+      .fields{grid-template-columns:minmax(0,1fr)}
+    }
+    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+
+  <!-- SVG icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0"/><path d="M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8M3 14h1.5M19.5 14H21"/></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88zm8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.17-3.48-8.41z"/></symbol>
+    </defs>
+  </svg>
+
+  <header>
+    <div class="wrap nav">
+      <a href="../" class="brand" aria-label="Eric Koh, back to the recruitment page">
+        <span class="brand-mark">EK</span>
+        <span>Eric Koh<small>Insurance &amp; Takaful</small></span>
+      </a>
+      <a href="../" class="btn btn-ghost"><svg><use href="#i-arrow-left"/></svg><span>Back<span class="long"> to recruitment page</span></span></a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <span class="eyebrow">Free tools · Plan with confidence</span>
+        <h1>Free financial <span class="accent">calculators</span></h1>
+        <p class="lead">Quick estimates for protection, retirement, your children's education and rising medical costs. Every default below is an example assumption, so change any number to match your own situation.</p>
+      </div>
+    </section>
+
+    <section class="calc-section">
+      <div class="wrap">
+        <div class="tabs" role="tablist" aria-label="Choose a calculator">
+          <button class="tab" role="tab" id="t-coverage" aria-controls="coverage" aria-selected="true">
+            <span class="icon"><svg><use href="#i-shield"/></svg></span>
+            <span><b>Coverage needs</b><small>Life &amp; critical illness gap</small></span>
+          </button>
+          <button class="tab" role="tab" id="t-retirement" aria-controls="retirement" aria-selected="false" tabindex="-1">
+            <span class="icon"><svg><use href="#i-sun"/></svg></span>
+            <span><b>Retirement savings</b><small>How much you may need</small></span>
+          </button>
+          <button class="tab" role="tab" id="t-education" aria-controls="education" aria-selected="false" tabindex="-1">
+            <span class="icon"><svg><use href="#i-cap"/></svg></span>
+            <span><b>Education fund</b><small>Your child's university costs</small></span>
+          </button>
+          <button class="tab" role="tab" id="t-medical" aria-controls="medical" aria-selected="false" tabindex="-1">
+            <span class="icon"><svg><use href="#i-pulse"/></svg></span>
+            <span><b>Medical cost inflation</b><small>See how costs could grow</small></span>
+          </button>
+        </div>
+
+        <!-- 1. COVERAGE -->
+        <div class="panel" id="coverage" role="tabpanel" aria-labelledby="t-coverage">
+          <form class="card" data-calc="coverage" novalidate onsubmit="return false">
+            <div class="panel-head">
+              <h2>Coverage needs</h2>
+              <p>Estimate how much life and critical illness (CI) cover your family might need, and the gap after what you already have.</p>
+            </div>
+            <fieldset>
+              <legend>Your income</legend>
+              <div class="fields">
+                <div class="field"><label for="cv-income">Annual income</label><div class="input"><span>RM</span><input id="cv-income" data-money inputmode="decimal" value="60,000"></div></div>
+                <div class="field"><label for="cv-years">Years of income to replace</label><div class="input"><input id="cv-years" type="number" min="0" max="40" step="1" value="10"><span class="suf">yrs</span></div></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Outstanding debts</legend>
+              <div class="fields">
+                <div class="field"><label for="cv-home">Home loan</label><div class="input"><span>RM</span><input id="cv-home" data-money inputmode="decimal" value="300,000"></div></div>
+                <div class="field"><label for="cv-car">Car loan</label><div class="input"><span>RM</span><input id="cv-car" data-money inputmode="decimal" value="50,000"></div></div>
+                <div class="field"><label for="cv-other">Other debts</label><div class="input"><span>RM</span><input id="cv-other" data-money inputmode="decimal" value="10,000"></div><span class="hint">Personal loans, credit cards</span></div>
+                <div class="field"><label for="cv-edu">Children's education needs</label><div class="input"><span>RM</span><input id="cv-edu" data-money inputmode="decimal" value="150,000"></div><span class="hint">Total for all children</span></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>What you already have</legend>
+              <div class="fields">
+                <div class="field"><label for="cv-life">Existing life cover</label><div class="input"><span>RM</span><input id="cv-life" data-money inputmode="decimal" value="200,000"></div><span class="hint">Personal and employer policies</span></div>
+                <div class="field"><label for="cv-sav">Savings &amp; investments</label><div class="input"><span>RM</span><input id="cv-sav" data-money inputmode="decimal" value="50,000"></div><span class="hint">Cash, investments, EPF</span></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Critical illness</legend>
+              <div class="fields">
+                <div class="field"><label for="cv-ciy">Years of income for CI</label><div class="input"><input id="cv-ciy" type="number" min="0" max="20" step="1" value="5"><span class="suf">yrs</span></div><span class="hint">Time off work and treatment</span></div>
+                <div class="field"><label for="cv-ci">Existing CI cover</label><div class="input"><span>RM</span><input id="cv-ci" data-money inputmode="decimal" value="100,000"></div></div>
+              </div>
+            </fieldset>
+            <p class="assume"><svg><use href="#i-info"/></svg><span>All figures above are example assumptions, not facts or recommendations. Replace them with your own numbers.</span></p>
+          </form>
+
+          <aside class="card results" aria-live="polite">
+            <span class="eyebrow">Your estimate</span>
+            <div class="big" id="cv-out-gap">RM 0</div>
+            <p class="big-label">estimated life coverage gap</p>
+            <ul class="rows">
+              <li class="sub"><span>Life cover</span></li>
+              <li><span>Income replacement</span><b id="cv-out-inc">–</b></li>
+              <li><span>Debts</span><b id="cv-out-debt">–</b></li>
+              <li><span>Children's education</span><b id="cv-out-edu">–</b></li>
+              <li class="total"><span>Total life need</span><b id="cv-out-need">–</b></li>
+              <li><span>Less existing cover &amp; savings</span><b id="cv-out-have">–</b></li>
+              <li class="gap"><span>Life coverage gap</span><b id="cv-out-lgap">–</b></li>
+              <li class="sub"><span>Critical illness</span></li>
+              <li class="total"><span>CI need</span><b id="cv-out-cineed">–</b></li>
+              <li><span>Less existing CI cover</span><b id="cv-out-cihave">–</b></li>
+              <li class="gap"><span>CI coverage gap</span><b id="cv-out-cigap">–</b></li>
+            </ul>
+            <details class="how">
+              <summary>How this is calculated</summary>
+              <div>
+                <p>This uses a common needs-based rule of thumb:</p>
+                <ol>
+                  <li><b>Life need</b> = annual income × years to replace + outstanding debts + children's education.</li>
+                  <li><b>Life gap</b> = life need − existing life cover − savings you could use.</li>
+                  <li><b>CI need</b> = annual income × years of income for CI (many planners suggest a few years' income to cover treatment and time off work).</li>
+                  <li><b>CI gap</b> = CI need − existing CI cover.</li>
+                </ol>
+                <p>It doesn't adjust for inflation, investment returns or your spouse's income.</p>
+              </div>
+            </details>
+            <a class="btn btn-primary wa" id="cv-wa" href="https://wa.me/60122992009" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg>Discuss my results with Eric on WhatsApp</a>
+            <p class="mini-disc">Estimate for illustration only, not financial advice.</p>
+          </aside>
+        </div>
+
+        <!-- 2. RETIREMENT -->
+        <div class="panel" id="retirement" role="tabpanel" aria-labelledby="t-retirement" hidden>
+          <form class="card" data-calc="retirement" novalidate onsubmit="return false">
+            <div class="panel-head">
+              <h2>Retirement savings</h2>
+              <p>See how much you might need when you retire, what your savings could grow to, and how much more to set aside each month.</p>
+            </div>
+            <fieldset>
+              <legend>Timeline</legend>
+              <div class="fields">
+                <div class="field"><label for="rt-age">Current age</label><div class="input"><input id="rt-age" type="number" min="16" max="80" step="1" value="30"><span class="suf">yrs</span></div></div>
+                <div class="field"><label for="rt-ret">Retirement age</label><div class="input"><input id="rt-ret" type="number" min="30" max="85" step="1" value="60"><span class="suf">yrs</span></div></div>
+                <div class="field"><label for="rt-yrs">Years in retirement</label><div class="input"><input id="rt-yrs" type="number" min="1" max="50" step="1" value="20"><span class="suf">yrs</span></div><span class="hint">How long your savings need to last</span></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Lifestyle</legend>
+              <div class="fields">
+                <div class="field"><label for="rt-exp">Monthly expenses in retirement</label><div class="input"><span>RM</span><input id="rt-exp" data-money inputmode="decimal" value="4,000"></div><span class="hint">In today's money</span></div>
+                <div class="field"><label for="rt-inf">Expected inflation</label><div class="input"><input id="rt-inf" type="number" min="0" max="20" step="0.1" value="3"><span class="suf">% / yr</span></div></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Your savings</legend>
+              <div class="fields">
+                <div class="field"><label for="rt-sav">Current savings incl. EPF</label><div class="input"><span>RM</span><input id="rt-sav" data-money inputmode="decimal" value="80,000"></div></div>
+                <div class="field"><label for="rt-mon">Monthly contribution</label><div class="input"><span>RM</span><input id="rt-mon" data-money inputmode="decimal" value="1,000"></div><span class="hint">Including EPF contributions</span></div>
+                <div class="field"><label for="rt-rtn">Expected return</label><div class="input"><input id="rt-rtn" type="number" min="0" max="20" step="0.1" value="4"><span class="suf">% / yr</span></div></div>
+              </div>
+            </fieldset>
+            <p class="assume"><svg><use href="#i-info"/></svg><span>Inflation and return rates are example assumptions, not predictions. Real returns vary and are not guaranteed.</span></p>
+          </form>
+
+          <aside class="card results" aria-live="polite">
+            <span class="eyebrow">Your estimate</span>
+            <div class="big" id="rt-out-short">RM 0</div>
+            <p class="big-label" id="rt-out-shortlabel">estimated shortfall at retirement</p>
+            <div class="meter">
+              <div class="meter-top"><span>Projected savings cover</span><b id="rt-out-pct">0%</b></div>
+              <div class="meter-bar"><i id="rt-out-bar"></i></div>
+            </div>
+            <ul class="rows">
+              <li><span>Years until retirement</span><b id="rt-out-n">–</b></li>
+              <li><span>Monthly expenses at retirement</span><b id="rt-out-fexp">–</b></li>
+              <li class="total"><span>Amount needed at retirement</span><b id="rt-out-need">–</b></li>
+              <li><span>Projected savings at retirement</span><b id="rt-out-proj">–</b></li>
+              <li class="gap"><span>Shortfall</span><b id="rt-out-gap">–</b></li>
+              <li class="gap"><span>Extra monthly saving needed</span><b id="rt-out-extra">–</b></li>
+            </ul>
+            <p class="note warn" id="rt-warn" hidden></p>
+            <details class="how">
+              <summary>How this is calculated</summary>
+              <div>
+                <ol>
+                  <li>Your monthly expenses are grown by inflation until retirement.</li>
+                  <li><b>Amount needed</b> is the lump sum that can pay those expenses each year for your years in retirement, rising with inflation, while the balance keeps earning the expected return.</li>
+                  <li><b>Projected savings</b> = current savings and monthly contributions grown at the expected return until retirement.</li>
+                  <li><b>Extra monthly saving</b> is what you'd need to add each month, at the same return, to close the shortfall.</li>
+                </ol>
+              </div>
+            </details>
+            <a class="btn btn-primary wa" id="rt-wa" href="https://wa.me/60122992009" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg>Discuss my results with Eric on WhatsApp</a>
+            <p class="mini-disc">Estimate for illustration only, not financial advice.</p>
+          </aside>
+        </div>
+
+        <!-- 3. EDUCATION -->
+        <div class="panel" id="education" role="tabpanel" aria-labelledby="t-education" hidden>
+          <form class="card" data-calc="education" novalidate onsubmit="return false">
+            <div class="panel-head">
+              <h2>Children's education fund</h2>
+              <p>Estimate what university could cost by the time your child starts, and how much to save each month to get there.</p>
+            </div>
+            <fieldset>
+              <legend>Your child</legend>
+              <div class="fields">
+                <div class="field"><label for="ed-age">Child's current age</label><div class="input"><input id="ed-age" type="number" min="0" max="25" step="1" value="3"><span class="suf">yrs</span></div></div>
+                <div class="field"><label for="ed-start">University start age</label><div class="input"><input id="ed-start" type="number" min="1" max="30" step="1" value="18"><span class="suf">yrs</span></div></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Course cost</legend>
+              <div class="fields">
+                <div class="field full">
+                  <span class="hint" style="font-weight:600;color:var(--ink);font-size:.88rem">Pick an example, then edit the amount</span>
+                  <!-- Example figures only. Edit data-cost values to change the presets. -->
+                  <div class="presets" role="group" aria-label="Course cost examples">
+                    <button type="button" class="chip" data-cost="40000">Local public uni</button>
+                    <button type="button" class="chip" data-cost="120000" aria-pressed="true">Local private uni</button>
+                    <button type="button" class="chip" data-cost="450000">Overseas</button>
+                  </div>
+                </div>
+                <div class="field full"><label for="ed-cost">Total course cost in today's money</label><div class="input"><span>RM</span><input id="ed-cost" data-money inputmode="decimal" value="120,000"></div><span class="hint">Example amounts only. Include fees and living costs for the whole course.</span></div>
+                <div class="field"><label for="ed-inf">Education inflation</label><div class="input"><input id="ed-inf" type="number" min="0" max="20" step="0.1" value="5"><span class="suf">% / yr</span></div></div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Your savings</legend>
+              <div class="fields">
+                <div class="field"><label for="ed-sav">Current education savings</label><div class="input"><span>RM</span><input id="ed-sav" data-money inputmode="decimal" value="10,000"></div></div>
+                <div class="field"><label for="ed-rtn">Expected return</label><div class="input"><input id="ed-rtn" type="number" min="0" max="20" step="0.1" value="4"><span class="suf">% / yr</span></div></div>
+              </div>
+            </fieldset>
+            <p class="assume"><svg><use href="#i-info"/></svg><span>Course costs, inflation and returns are example assumptions, not quotes or predictions. Check actual fees with the institution.</span></p>
+          </form>
+
+          <aside class="card results" aria-live="polite">
+            <span class="eyebrow">Your estimate</span>
+            <div class="big" id="ed-out-mon">RM 0</div>
+            <p class="big-label">monthly saving needed</p>
+            <div class="meter">
+              <div class="meter-top"><span>Funded by current savings</span><b id="ed-out-pct">0%</b></div>
+              <div class="meter-bar"><i id="ed-out-bar"></i></div>
+            </div>
+            <ul class="rows">
+              <li><span>Years until university</span><b id="ed-out-n">–</b></li>
+              <li class="total"><span>Future course cost</span><b id="ed-out-fut">–</b></li>
+              <li><span>Current savings will grow to</span><b id="ed-out-fsav">–</b></li>
+              <li class="gap"><span>Gap to fund</span><b id="ed-out-gap">–</b></li>
+              <li class="gap"><span>Monthly saving needed</span><b id="ed-out-mon2">–</b></li>
+            </ul>
+            <p class="note warn" id="ed-warn" hidden></p>
+            <details class="how">
+              <summary>How this is calculated</summary>
+              <div>
+                <ol>
+                  <li><b>Future cost</b> = today's course cost × (1 + education inflation) for each year until university.</li>
+                  <li>Your current savings are grown at the expected return over the same period.</li>
+                  <li><b>Monthly saving</b> is the amount that, saved every month at the expected return, covers the remaining gap by the start of university.</li>
+                </ol>
+                <p>For simplicity, the whole course cost is treated as needed at the start of university.</p>
+              </div>
+            </details>
+            <a class="btn btn-primary wa" id="ed-wa" href="https://wa.me/60122992009" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg>Discuss my results with Eric on WhatsApp</a>
+            <p class="mini-disc">Estimate for illustration only, not financial advice.</p>
+          </aside>
+        </div>
+
+        <!-- 4. MEDICAL -->
+        <div class="panel" id="medical" role="tabpanel" aria-labelledby="t-medical" hidden>
+          <form class="card" data-calc="medical" novalidate onsubmit="return false">
+            <div class="panel-head">
+              <h2>Medical cost inflation</h2>
+              <p>See how a medical premium or medical bill could grow over time if costs keep rising each year.</p>
+            </div>
+            <fieldset>
+              <legend>Your numbers</legend>
+              <div class="fields">
+                <div class="field full"><label for="md-cost">Current annual premium or medical cost</label><div class="input"><span>RM</span><input id="md-cost" data-money inputmode="decimal" value="3,000"></div></div>
+                <div class="field"><label for="md-inf">Medical inflation rate</label><div class="input"><input id="md-inf" type="number" min="0" max="30" step="0.5" value="10"><span class="suf">% / yr</span></div></div>
+                <div class="field"><label for="md-yrs">Number of years</label><div class="input"><input id="md-yrs" type="number" min="1" max="40" step="1" value="20"><span class="suf">yrs</span></div><span class="hint">Up to 40 years</span></div>
+              </div>
+            </fieldset>
+            <p class="assume"><svg><use href="#i-info"/></svg><span>The inflation rate is an example assumption you can change. Actual premiums and medical costs may rise faster or slower.</span></p>
+          </form>
+
+          <aside class="card results" aria-live="polite">
+            <span class="eyebrow">Your estimate</span>
+            <div class="big" id="md-out-fut">RM 0</div>
+            <p class="big-label" id="md-out-futlabel">yearly cost in 20 years</p>
+            <ul class="rows">
+              <li><span>Cost today</span><b id="md-out-now">–</b></li>
+              <li class="total"><span id="md-out-futlabel2">Cost in 20 years</span><b id="md-out-fut2">–</b></li>
+              <li><span>Compared with today</span><b id="md-out-x">–</b></li>
+              <li class="gap"><span id="md-out-totlabel">Total over the next 20 years</span><b id="md-out-tot">–</b></li>
+            </ul>
+            <details class="how">
+              <summary>How this is calculated</summary>
+              <div>
+                <p>Each year's cost = today's cost × (1 + medical inflation rate) raised to the number of years from now. The total adds up the yearly costs for year 1 to the last year.</p>
+              </div>
+            </details>
+            <a class="btn btn-primary wa" id="md-wa" href="https://wa.me/60122992009" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg>Discuss my results with Eric on WhatsApp</a>
+            <p class="mini-disc">Estimate for illustration only, not financial advice.</p>
+          </aside>
+
+          <div class="card chart-card">
+            <div class="chart-head">
+              <div><h3>Year by year</h3><p>Estimated yearly cost at your chosen inflation rate</p></div>
+              <div class="legend"><span><i></i>Yearly cost</span><span><i class="c"></i>Final year</span></div>
+            </div>
+            <div class="chart" id="md-chart" role="img" aria-label="Bar chart of estimated yearly medical cost"></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Year</th><th>Yearly cost</th><th>Running total</th></tr></thead>
+                <tbody id="md-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="disclaimer" role="note">
+          <span class="icon"><svg><use href="#i-info"/></svg></span>
+          <div>
+            <h3>For illustration only</h3>
+            <p>These calculators give rough estimates based on the assumptions you enter. They are not financial advice and don't consider your full circumstances, and results are not guaranteed. Please speak to a licensed adviser before making any financial decision.</p>
+          </div>
+        </div>
+
+        <div class="cta-strip">
+          <div>
+            <h2>Want a second pair of eyes on your numbers?</h2>
+            <p>I'm happy to walk through your results over a coffee, with no pressure. We can look at insurance and takaful options that fit your plans.</p>
+          </div>
+          <div class="btns">
+            <a class="btn btn-light" id="cta-wa" href="https://wa.me/60122992009?text=Hi%20Eric%2C%20I%20used%20the%20financial%20calculators%20on%20your%20website.%20Can%20we%20have%20a%20chat%3F" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg>WhatsApp Eric</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>© <span id="year">2026</span> Eric Koh · District Manager, Insurance &amp; Takaful</span>
+      <nav aria-label="Footer"><a href="../">Join my team</a><a href="https://wa.me/60122992009" target="_blank" rel="noopener">WhatsApp</a></nav>
+      <span>Klang Valley, Malaysia</span>
+    </div>
+  </footer>
+
+  <script>
+  /* ---------- Pure maths (no DOM), easy to test ---------- */
+  var Calc = {
+    monthlyRate: function(r){ return Math.pow(1 + r, 1/12) - 1; },
+    // Future value of a monthly payment made at the end of each month for `years` years
+    fvMonthly: function(pmt, r, years){
+      var m = Math.round(years * 12), i = Calc.monthlyRate(r);
+      if (m <= 0) return 0;
+      return i === 0 ? pmt * m : pmt * (Math.pow(1 + i, m) - 1) / i;
+    },
+    // Monthly payment needed to reach `target` in `years` years
+    pmtFor: function(target, r, years){
+      var m = Math.round(years * 12), i = Calc.monthlyRate(r);
+      if (target <= 0) return 0;
+      if (m <= 0) return Infinity;
+      return i === 0 ? target / m : target * i / (Math.pow(1 + i, m) - 1);
+    },
+    coverage: function(o){
+      var inc = o.income * o.years;
+      var debt = o.home + o.car + o.other;
+      var need = inc + debt + o.edu;
+      var have = o.life + o.savings;
+      var ciNeed = o.income * o.ciYears;
+      return { incomeNeed: inc, debts: debt, edu: o.edu, lifeNeed: need, lifeHave: have,
+               lifeGap: Math.max(0, need - have), ciNeed: ciNeed, ciHave: o.ci, ciGap: Math.max(0, ciNeed - o.ci) };
+    },
+    retirement: function(o){
+      var n = o.retAge - o.age;
+      if (n <= 0) return { error: 'Retirement age needs to be higher than your current age.' };
+      if (o.yearsInRet <= 0) return { error: 'Years in retirement needs to be at least 1.' };
+      var g = o.inflation, r = o.ret;
+      var annualAtRet = o.monthly * 12 * Math.pow(1 + g, n);
+      // Lump sum needed: yearly withdrawals at the start of each year, growing with inflation, balance earning r
+      var need = 0, yrs = Math.round(o.yearsInRet);
+      for (var k = 0; k < yrs; k++) need += annualAtRet * Math.pow((1 + g) / (1 + r), k);
+      var projected = o.savings * Math.pow(1 + r, n) + Calc.fvMonthly(o.contribution, r, n);
+      var gap = Math.max(0, need - projected);
+      return { years: n, monthlyAtRet: o.monthly * Math.pow(1 + g, n), need: need, projected: projected,
+               shortfall: gap, surplus: Math.max(0, projected - need), extraMonthly: Calc.pmtFor(gap, r, n),
+               pct: need > 0 ? projected / need : 1 };
+    },
+    education: function(o){
+      var n = o.startAge - o.childAge;
+      if (n <= 0) return { error: 'University start age needs to be higher than your child\'s current age.' };
+      var fut = o.cost * Math.pow(1 + o.inflation, n);
+      var fsav = o.savings * Math.pow(1 + o.ret, n);
+      var gap = Math.max(0, fut - fsav);
+      return { years: n, futureCost: fut, savingsFV: fsav, gap: gap, monthly: Calc.pmtFor(gap, o.ret, n),
+               pct: fut > 0 ? fsav / fut : 1 };
+    },
+    medical: function(o){
+      var n = Math.max(1, Math.min(40, Math.round(o.years)));
+      var rows = [], total = 0;
+      for (var k = 1; k <= n; k++){
+        var c = o.cost * Math.pow(1 + o.inflation, k);
+        total += c; rows.push({ year: k, cost: c, total: total });
+      }
+      var fut = rows[n - 1].cost;
+      return { years: n, now: o.cost, future: fut, multiple: o.cost > 0 ? fut / o.cost : 0, total: total, rows: rows };
+    }
+  };
+
+  /* ---------- Helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function val(id){
+    var v = parseFloat(String($(id).value).replace(/[^0-9.\-]/g, ''));
+    return isFinite(v) ? v : 0;
+  }
+  function pct(id){ return val(id) / 100; }
+  function RM(n){
+    if (!isFinite(n)) return '–';
+    var s = Math.round(Math.abs(n)).toLocaleString('en-US');
+    return (n < -0.5 ? '−RM ' : 'RM ') + s;
+  }
+  function setText(id, t){ $(id).textContent = t; }
+  function wa(id, msg){ $(id).href = 'https://wa.me/60122992009?text=' + encodeURIComponent(msg); }
+  function meter(barId, pctId, p){
+    var c = Math.max(0, Math.min(1, p));
+    $(barId).style.width = (c * 100).toFixed(1) + '%';
+    setText(pctId, Math.round(Math.max(0, p) * 100) + '%');
+  }
+  function warn(id, msg){ var el = $(id); el.hidden = !msg; el.textContent = msg || ''; }
+
+  /* ---------- Renderers ---------- */
+  function renderCoverage(){
+    var r = Calc.coverage({ income: val('cv-income'), years: val('cv-years'), home: val('cv-home'), car: val('cv-car'),
+      other: val('cv-other'), edu: val('cv-edu'), life: val('cv-life'), savings: val('cv-sav'), ciYears: val('cv-ciy'), ci: val('cv-ci') });
+    setText('cv-out-gap', RM(r.lifeGap));
+    $('cv-out-gap').classList.toggle('ok', r.lifeGap === 0);
+    setText('cv-out-inc', RM(r.incomeNeed)); setText('cv-out-debt', RM(r.debts)); setText('cv-out-edu', RM(r.edu));
+    setText('cv-out-need', RM(r.lifeNeed)); setText('cv-out-have', '−' + RM(r.lifeHave)); setText('cv-out-lgap', RM(r.lifeGap));
+    setText('cv-out-cineed', RM(r.ciNeed)); setText('cv-out-cihave', '−' + RM(r.ciHave)); setText('cv-out-cigap', RM(r.ciGap));
+    wa('cv-wa', 'Hi Eric, I used the Coverage needs calculator on your website. My estimated coverage gap is ' + RM(r.lifeGap) +
+      ' for life cover and ' + RM(r.ciGap) + ' for critical illness. Can we discuss my results?');
+  }
+
+  function renderRetirement(){
+    var r = Calc.retirement({ age: val('rt-age'), retAge: val('rt-ret'), monthly: val('rt-exp'), inflation: pct('rt-inf'),
+      yearsInRet: val('rt-yrs'), savings: val('rt-sav'), ret: pct('rt-rtn'), contribution: val('rt-mon') });
+    if (r.error){
+      warn('rt-warn', r.error);
+      ['rt-out-n','rt-out-fexp','rt-out-need','rt-out-proj','rt-out-gap','rt-out-extra'].forEach(function(id){ setText(id, '–'); });
+      setText('rt-out-short', '–'); meter('rt-out-bar', 'rt-out-pct', 0);
+      wa('rt-wa', 'Hi Eric, I used the Retirement savings calculator on your website. Can we discuss my retirement plan?');
+      return;
+    }
+    warn('rt-warn', '');
+    var surplus = r.shortfall === 0;
+    setText('rt-out-short', surplus ? RM(r.surplus) : RM(r.shortfall));
+    setText('rt-out-shortlabel', surplus ? 'projected surplus at retirement. You look on track!' : 'estimated shortfall at retirement');
+    $('rt-out-short').classList.toggle('ok', surplus);
+    meter('rt-out-bar', 'rt-out-pct', r.pct);
+    setText('rt-out-n', r.years + (r.years === 1 ? ' year' : ' years'));
+    setText('rt-out-fexp', RM(r.monthlyAtRet) + ' / mo');
+    setText('rt-out-need', RM(r.need)); setText('rt-out-proj', RM(r.projected));
+    setText('rt-out-gap', RM(r.shortfall)); setText('rt-out-extra', RM(r.extraMonthly) + ' / mo');
+    wa('rt-wa', 'Hi Eric, I used the Retirement savings calculator on your website. I may need about ' + RM(r.need) +
+      ' at retirement' + (surplus ? ' and I look on track' : ', with a shortfall of ' + RM(r.shortfall) + ' (about ' + RM(r.extraMonthly) + ' extra a month)') +
+      '. Can we discuss my results?');
+  }
+
+  function renderEducation(){
+    var r = Calc.education({ childAge: val('ed-age'), startAge: val('ed-start'), cost: val('ed-cost'), inflation: pct('ed-inf'),
+      savings: val('ed-sav'), ret: pct('ed-rtn') });
+    if (r.error){
+      warn('ed-warn', r.error);
+      ['ed-out-n','ed-out-fut','ed-out-fsav','ed-out-gap','ed-out-mon2'].forEach(function(id){ setText(id, '–'); });
+      setText('ed-out-mon', '–'); meter('ed-out-bar', 'ed-out-pct', 0);
+      wa('ed-wa', 'Hi Eric, I used the Children\'s education fund calculator on your website. Can we discuss my child\'s education plan?');
+      return;
+    }
+    warn('ed-warn', r.gap === 0 ? 'Your current savings may already cover the estimated cost. Nice work!' : '');
+    if (r.gap === 0) $('ed-warn').classList.remove('warn'); else $('ed-warn').classList.add('warn');
+    setText('ed-out-mon', RM(r.monthly) + ' / mo');
+    $('ed-out-mon').classList.toggle('ok', r.gap === 0);
+    meter('ed-out-bar', 'ed-out-pct', r.pct);
+    setText('ed-out-n', r.years + (r.years === 1 ? ' year' : ' years'));
+    setText('ed-out-fut', RM(r.futureCost)); setText('ed-out-fsav', RM(r.savingsFV));
+    setText('ed-out-gap', RM(r.gap)); setText('ed-out-mon2', RM(r.monthly) + ' / mo');
+    wa('ed-wa', 'Hi Eric, I used the Children\'s education fund calculator on your website. The estimated future course cost is ' +
+      RM(r.futureCost) + ' and I may need to save about ' + RM(r.monthly) + ' a month. Can we discuss my results?');
+  }
+
+  function renderMedical(){
+    var r = Calc.medical({ cost: val('md-cost'), inflation: pct('md-inf'), years: val('md-yrs') });
+    var yl = r.years + (r.years === 1 ? ' year' : ' years');
+    setText('md-out-fut', RM(r.future));
+    setText('md-out-futlabel', 'yearly cost in ' + yl);
+    setText('md-out-futlabel2', 'Cost in ' + yl);
+    setText('md-out-totlabel', 'Total over the next ' + yl);
+    setText('md-out-now', RM(r.now)); setText('md-out-fut2', RM(r.future));
+    setText('md-out-x', r.multiple ? r.multiple.toFixed(1) + '× today' : '–');
+    setText('md-out-tot', RM(r.total));
+    // chart
+    var max = Math.max(r.now, r.future, 1), html = '';
+    var step = r.years <= 10 ? 1 : (r.years <= 20 ? 5 : 10);
+    var all = [{ year: 0, cost: r.now }].concat(r.rows);
+    all.forEach(function(row, idx){
+      var h = (row.cost / max * 100).toFixed(2) + '%';
+      var cls = row.year === 0 ? 'bar now' : (idx === all.length - 1 ? 'bar last' : 'bar');
+      if (idx > all.length / 2) cls += ' r';
+      var label = (row.year === 0) ? 'Now' : ((row.year % step === 0 || idx === all.length - 1) ? 'Y' + row.year : '');
+      html += '<div class="' + cls + '" style="--h:' + h + '">' +
+        '<i style="height:' + h + '"></i>' +
+        (label ? '<em>' + label + '</em>' : '') +
+        (idx === all.length - 1 ? '<span class="val">' + RM(row.cost) + '</span>' : '<span class="tip">' + (row.year === 0 ? 'Today' : 'Year ' + row.year) + ': ' + RM(row.cost) + '</span>') +
+        '</div>';
+    });
+    $('md-chart').innerHTML = html;
+    var t = '<tr><td>Today</td><td>' + RM(r.now) + '</td><td>–</td></tr>';
+    r.rows.forEach(function(row){ t += '<tr><td>Year ' + row.year + '</td><td>' + RM(row.cost) + '</td><td>' + RM(row.total) + '</td></tr>'; });
+    $('md-table').innerHTML = t;
+    wa('md-wa', 'Hi Eric, I used the Medical cost inflation calculator on your website. A yearly cost of ' + RM(r.now) +
+      ' could grow to about ' + RM(r.future) + ' in ' + yl + '. Can we discuss my medical protection?');
+  }
+
+  var renderers = { coverage: renderCoverage, retirement: renderRetirement, education: renderEducation, medical: renderMedical };
+
+  /* ---------- Wiring ---------- */
+  document.querySelectorAll('form[data-calc]').forEach(function(f){
+    var fn = renderers[f.getAttribute('data-calc')];
+    f.addEventListener('input', fn);
+  });
+  // Money inputs: commas are ignored when calculating and re-added when leaving the field
+  document.querySelectorAll('input[data-money]').forEach(function(inp){
+    inp.addEventListener('blur', function(){
+      var v = parseFloat(inp.value.replace(/[^0-9.]/g, ''));
+      inp.value = isFinite(v) ? Math.round(v).toLocaleString('en-US') : '';
+    });
+  });
+  // Education presets
+  var chips = document.querySelectorAll('.chip[data-cost]');
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      chips.forEach(function(x){ x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
+      $('ed-cost').value = Number(c.getAttribute('data-cost')).toLocaleString('en-US');
+      renderEducation();
+    });
+  });
+  $('ed-cost').addEventListener('input', function(){
+    var v = val('ed-cost');
+    chips.forEach(function(x){ x.setAttribute('aria-pressed', Number(x.getAttribute('data-cost')) === v ? 'true' : 'false'); });
+  });
+
+  // Tabs
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(name, focus){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('aria-controls') === name;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute('aria-controls')).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    if (history.replaceState) history.replaceState(null, '', '#' + name);
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ selectTab(t.getAttribute('aria-controls')); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      selectTab(tabs[(i + d + tabs.length) % tabs.length].getAttribute('aria-controls'), true);
+    });
+  });
+  var start = (location.hash || '').slice(1);
+  if (renderers[start]) selectTab(start);
+
+  Object.keys(renderers).forEach(function(k){ renderers[k](); });
+  $('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
