@@ -64,6 +64,7 @@
 
     /* Tabs */
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .tabs{scroll-margin-top:84px}
     .tab{display:flex;align-items:flex-start;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
     .tab:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
     .tab:focus-visible{outline:3px solid var(--coral-500);outline-offset:3px}
@@ -808,7 +809,12 @@
     });
   });
   var start = (location.hash || '').slice(1);
-  if (renderers[start]) selectTab(start);
+  if (renderers[start]){
+    selectTab(start);
+    // Deep link (e.g. calculator/#retirement): show the tabs with the chosen calculator just below the header
+    var toTabs = function(){ document.querySelector('.tabs').scrollIntoView({ block: 'start' }); };
+    toTabs(); window.addEventListener('load', function(){ setTimeout(toTabs, 0); });
+  }
 
   Object.keys(renderers).forEach(function(k){ renderers[k](); });
   $('year').textContent = new Date().getFullYear();
