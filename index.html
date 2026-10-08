@@ -110,6 +110,30 @@
     .card.feature{border-color:rgba(14,110,106,.35);background:linear-gradient(160deg,#fff 55%,var(--teal-50))}
     .badge{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;background:var(--coral-500);color:#fff;padding:3px 9px;border-radius:999px;margin-left:8px;vertical-align:middle}
 
+    /* Calculators / Understand your needs */
+    .needs{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--teal-50),#fff 72%);border-block:1px solid var(--line)}
+    .needs::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(14,110,106,.12) 1.2px, transparent 1.2px);background-size:22px 22px;mask-image:radial-gradient(ellipse 55% 70% at 85% 50%, #000 20%, transparent 70%);-webkit-mask-image:radial-gradient(ellipse 55% 70% at 85% 50%, #000 20%, transparent 70%);pointer-events:none}
+    .needs::after{content:"";position:absolute;width:460px;height:460px;left:-180px;bottom:-220px;border-radius:50%;background:radial-gradient(circle, rgba(232,119,111,.14), transparent 65%);pointer-events:none}
+    .needs-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+    .needs p.body{color:var(--muted);margin-top:16px;max-width:600px;text-wrap:pretty}
+    .needs-list{list-style:none;margin-top:22px;display:grid;gap:12px}
+    .needs-list li{display:flex;gap:12px;align-items:flex-start;font-weight:600;color:var(--teal-900);font-size:.98rem;line-height:1.45}
+    .needs-list li svg{width:22px;height:22px;flex:none;padding:4px;border-radius:50%;background:var(--teal-100);color:var(--teal-700);margin-top:0}
+    .needs-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:30px}
+    .btn-lg{padding:18px 32px;font-size:1.06rem}
+    .needs-note{font-size:.86rem;color:var(--muted);font-weight:600}
+    .calc-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .calc-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;text-decoration:none;box-shadow:0 1px 0 rgba(8,61,59,.03);transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+    .calc-card:nth-child(even){transform:translateY(22px)}
+    .calc-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(14,110,106,.35)}
+    .calc-card:nth-child(even):hover{transform:translateY(18px)}
+    .calc-card:focus-visible{outline:3px solid var(--coral-500);outline-offset:3px}
+    .calc-card .icon{margin-bottom:14px}
+    .calc-card p{color:var(--muted);font-size:.9rem;margin-top:6px;line-height:1.45}
+    .calc-card .go{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--coral-600);display:flex;align-items:center;gap:6px}
+    .calc-card .go svg{width:14px;height:14px;transition:transform .2s}
+    .calc-card:hover .go svg{transform:translateX(3px)}
+
     /* Who */
     .who{background:#fff;border-block:1px solid var(--line)}
     .persona{position:relative;padding-top:34px}
@@ -187,8 +211,13 @@
     .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:24px}
 
     /* Responsive */
+    @media (max-width:1100px){
+      .nav-links{gap:18px}
+    }
     @media (max-width:960px){
       .nav-links{display:none}
+      .needs-grid{grid-template-columns:1fr;gap:44px}
+      .calc-cards{max-width:640px;width:100%;margin-inline:auto}
       .hero-grid{grid-template-columns:1fr;gap:56px}
       .ai-card{max-width:520px;margin-inline:auto;width:100%}
       .g-3{grid-template-columns:1fr 1fr}
@@ -230,6 +259,16 @@
       .timeline span{font-size:.74rem;display:block;line-height:1.3}
       .foot{flex-direction:column;gap:4px}
       .hero::after{width:320px;height:320px;right:-120px;top:-100px}
+      .needs-cta .btn{width:100%}
+      .needs-cta{justify-content:center}
+      .calc-cards{gap:12px}
+      .calc-card{padding:16px}
+      .calc-card:nth-child(even),.calc-card:nth-child(even):hover{transform:none}
+      .calc-card .icon{width:40px;height:40px;border-radius:12px;margin-bottom:10px}
+      .calc-card .icon svg{width:20px;height:20px}
+      .calc-card h3{font-size:1rem}
+      .calc-card p{font-size:.82rem}
+      .calc-card .go{padding-top:10px;font-size:.7rem}
     }
     @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
@@ -252,6 +291,11 @@
       <symbol id="i-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></symbol>
       <symbol id="i-linkedin" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></symbol>
       <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88zm8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.17-3.48-8.41z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0"/><path d="M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8M3 14h1.5M19.5 14H21"/></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></symbol>
+      <symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8.5 6.5h7"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h.01M15.5 18h.01"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></symbol>
     </defs>
   </svg>
 
@@ -263,6 +307,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="#why">Why join</a></li>
+        <li><a href="calculator/">Calculators</a></li>
         <li><a href="#who">Who it's for</a></li>
         <li><a href="#learn">AI toolkit</a></li>
         <li><a href="#about">About Eric</a></li>
@@ -347,6 +392,55 @@
             <h3>A clear career path</h3>
             <p>Grow from adviser to leader, and build and lead a team of your own.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNDERSTAND YOUR NEEDS / CALCULATORS -->
+    <section id="calculators" class="needs">
+      <div class="wrap needs-grid">
+        <div>
+          <span class="eyebrow">Free financial calculators</span>
+          <h2>Understand your own financial needs</h2>
+          <p class="body">Good planning starts with knowing your own numbers. Not to worry about them, but so you can make calm, confident choices for the people who matter most. It helps to know:</p>
+          <ul class="needs-list">
+            <li><svg><use href="#i-check"/></svg>How much protection your family would need if your income suddenly stopped</li>
+            <li><svg><use href="#i-check"/></svg>Whether you're on track for the retirement you want</li>
+            <li><svg><use href="#i-check"/></svg>What your children's education could cost by the time they're ready</li>
+            <li><svg><use href="#i-check"/></svg>How rising medical costs could affect you in the years ahead</li>
+          </ul>
+          <p class="body">My free calculators give you a quick estimate in a few minutes. They're also a first taste of the needs-based planning my team does with clients every day, and the kind of meaningful conversation you'll learn to lead when you join us.</p>
+          <div class="needs-cta">
+            <a href="calculator/" class="btn btn-primary btn-lg"><svg><use href="#i-calc"/></svg>Try the free financial calculators</a>
+            <span class="needs-note">Free · No sign-up · Works on your phone</span>
+          </div>
+        </div>
+
+        <div class="calc-cards">
+          <a class="calc-card" href="calculator/#coverage">
+            <div class="icon"><svg><use href="#i-shield"/></svg></div>
+            <h3>Coverage needs</h3>
+            <p>Your life and critical illness protection gap</p>
+            <span class="go">Open<svg><use href="#i-arrow"/></svg></span>
+          </a>
+          <a class="calc-card" href="calculator/#retirement">
+            <div class="icon coral"><svg><use href="#i-sun"/></svg></div>
+            <h3>Retirement</h3>
+            <p>How much you may need, and if you're on track</p>
+            <span class="go">Open<svg><use href="#i-arrow"/></svg></span>
+          </a>
+          <a class="calc-card" href="calculator/#education">
+            <div class="icon coral"><svg><use href="#i-cap"/></svg></div>
+            <h3>Education fund</h3>
+            <p>Future university costs and what to save monthly</p>
+            <span class="go">Open<svg><use href="#i-arrow"/></svg></span>
+          </a>
+          <a class="calc-card" href="calculator/#medical">
+            <div class="icon"><svg><use href="#i-pulse"/></svg></div>
+            <h3>Medical cost inflation</h3>
+            <p>See how medical costs could grow over time</p>
+            <span class="go">Open<svg><use href="#i-arrow"/></svg></span>
+          </a>
         </div>
       </div>
     </section>
