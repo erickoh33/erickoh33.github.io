@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>Team Q Restock</title>
+<meta name="api-base" content="https://teamq-restock.erickoh33.workers.dev">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Restock"><meta name="theme-color" content="#0f766e">
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px -apple-system,system-ui,sans-serif;background:#ece5dd;height:100dvh;display:flex;flex-direction:column}
+header{background:#0f766e;color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;display:flex;align-items:center;gap:10px}
+header b{flex:1}header button{background:#ffffff22;color:#fff;border:0;border-radius:14px;padding:6px 12px;font-size:14px}
+#log{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:85%;padding:9px 12px;border-radius:14px;line-height:1.35;white-space:pre-wrap;box-shadow:0 1px 1px #0002}
+.bot{background:#fff;align-self:flex-start;border-top-left-radius:4px}.me{background:#d9fdd3;align-self:flex-end;border-top-right-radius:4px}
+table{border-collapse:collapse;font-size:14px;margin:6px 0;width:100%}td{padding:3px 4px;border-bottom:1px solid #eee}td.q{text-align:right;font-weight:600}
+.btns{display:flex;gap:8px;margin-top:6px}.btns button,.form button{flex:1;padding:9px;border:0;border-radius:10px;font-size:15px;font-weight:600}
+.ok{background:#0f766e;color:#fff}.no{background:#eee}
+footer{background:#f6f6f6;padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);display:flex;gap:6px}
+footer input{flex:1;padding:11px 14px;border:1px solid #ccc;border-radius:22px;font-size:16px}
+footer button{width:46px;border:0;border-radius:50%;background:#0f766e;color:#fff;font-size:18px}
+.form{background:#fff;padding:12px;display:none;flex-direction:column;gap:8px;border-top:1px solid #ddd}
+.form select,.form input,.form textarea{padding:10px;font-size:16px;border:1px solid #ccc;border-radius:10px;width:100%}
+.row{display:flex;gap:8px}#gate{position:fixed;inset:0;background:#0f766e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+#gate input{font-size:28px;letter-spacing:10px;text-align:center;width:220px;padding:10px;border-radius:12px;border:0}
+#gate button{padding:12px 40px;font-size:17px;border:0;border-radius:12px;background:#fff;color:#0f766e;font-weight:700}
+.small{font-size:13px;color:#666}
+</style></head><body>
+<div id="gate"><img src="icon-192.png" width="72" style="border-radius:16px"><h2 style="margin:0">Team Q Pool Restock</h2><div>Enter the 6-digit passcode</div>
+<input id="pc" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><input id="nm" placeholder="Your name (optional)" style="font-size:16px;letter-spacing:0;width:220px">
+<button id="go">Enter</button><div id="gerr"></div></div>
+<header><b>🥤 Team Q Pool Restock</b><button id="tf">Quick form</button></header>
+<div id="log"></div>
+<div class="form" id="form">
+ <select id="fs"></select>
+ <div class="row"><input id="fq" type="number" inputmode="numeric" min="0" placeholder="New stock count"><button class="ok" id="ffull" style="flex:0 0 80px">Full</button></div>
+ <div class="row"><button class="no" id="fadd">Add to report</button></div>
+</div>
+<footer><input id="t" placeholder='e.g. "47 48 49 full, 24 5"'><button id="send">➤</button></footer>
+<script>
+const API=document.querySelector('meta[name=api-base]').content.replace(/\/$/,'');
+let PC=sessionStorage.pc||'',NAME=localStorage.nm||'',SLOTS={},pending=[],srcText='',note='';
+const $=id=>document.getElementById(id),log=$('log');
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function say(html,who='bot'){const d=document.createElement('div');d.className='m '+who;d.innerHTML=html;log.appendChild(d);log.scrollTop=1e9;return d}
+async function api(p,b){const r=await fetch(API+p,{method:b?'POST':'GET',headers:{'content-type':'application/json','x-passcode':PC},body:b?JSON.stringify(b):undefined});const j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j}
+async function login(){PC=$('pc').style.display=='none'?'':$('pc').value.trim();NAME=$('nm').value.trim();try{await api('/auth');sessionStorage.pc=PC;localStorage.nm=NAME;start()}catch(e){$('gerr').textContent='Wrong passcode, try again.'}}
+$('go').onclick=login;$('pc').onkeydown=e=>e.key=='Enter'&&login();$('nm').value=NAME;
+async function start(){$('gate').style.display='none';SLOTS=(await api('/slots')).slots;
+ const groups={};for(const[k,v]of Object.entries(SLOTS))(groups[v.product]??=[]).push(k);
+ $('fs').innerHTML='<optgroup label="Product (all its slots)">'+Object.entries(groups).map(([p,s])=>`<option value="g:${s.join(',')}">${esc(p)} (slots ${s.join(', ')})</option>`).join('')+'</optgroup><optgroup label="Single slot">'+Object.entries(SLOTS).map(([k,v])=>`<option value="s:${k}">Slot ${k} – ${esc(v.product)} (max ${v.capacity})</option>`).join('')+'</optgroup>';
+ say(`Hi${NAME?' '+esc(NAME):''}! Tell me what you restocked, e.g.\n• "47 48 49 full"\n• "21 22 23 full, 24 5"\n• "12 kosong"  • "100 plus all full"\nOr tap <b>Quick form</b>. Start a message with "note:" to report a machine issue.`)}
+function addItems(items){for(const i of items){pending=pending.filter(p=>p.slot!=i.slot);pending.push(i)}pending.sort((a,b)=>a.slot-b.slot);confirmCard()}
+function confirmCard(extra=''){
+ const rows=pending.map(i=>`<tr><td>${i.slot}</td><td>${esc(i.product)}</td><td class=q>${i.qty}/${i.capacity}${i.capped?' ⚠️':''}</td></tr>`).join('');
+ const d=say(`${extra}<b>Please confirm:</b><table><tr class=small><td>Slot</td><td>Product</td><td class=q>New qty</td></tr>${rows}</table>${pending.some(i=>i.capped)?'<div class=small>⚠️ capped at slot capacity</div>':''}${note?'<div>📝 '+esc(note)+'</div>':''}<input placeholder="Add a note (optional)" class=nt style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px;margin-top:6px;font-size:15px" value="${esc(note)}"><div class=btns><button class=ok>✅ Confirm</button><button class=no>✏️ Edit</button></div>`);
+ const [ok,no]=d.querySelectorAll('button');ok.onclick=()=>submit(d);no.onclick=()=>{d.querySelector('.btns').remove();say('OK, send corrections (e.g. "slot 48 is 3") or use the Quick form.')}}
+async function submit(d){note=d.querySelector('.nt').value.trim();d.querySelector('.btns').remove();
+ try{const r=await api('/submit',{items:pending.map(i=>({slot:String(i.slot),qty:i.qty})),name:NAME,note,text:srcText});
+ say(`Saved ✅ ${pending.length} slot(s)${note?' + note':''} at ${r.created_at_myt.slice(11,16)} MYT. Thank you!`);pending=[];srcText='';note=''}catch(e){say('Could not save: '+esc(e.message))}}
+async function send(){const t=$('t').value.trim();if(!t)return;$('t').value='';say(esc(t),'me');
+ if(/^note[:\s]/i.test(t)){note=t.replace(/^note[:\s]*/i,'');if(pending.length)confirmCard();else{pending=[];const d=say(`Machine note: "${esc(note)}"<div class=btns><button class=ok>✅ Send note</button></div><input class=nt type=hidden value="${esc(note)}">`);d.querySelector('button').onclick=()=>submit(d)}return}
+ srcText+=(srcText?' | ':'')+t;const w=say('…');
+ try{const r=await api('/parse',{text:t});w.remove();if(r.unknown?.length)say('I couldn\'t read: '+esc(r.unknown.join(', '))+'. Try "slot 12 is 5" or "slot 12 full".');if(r.items.length)addItems(r.items)}catch(e){w.textContent='Error: '+e.message}}
+$('send').onclick=send;$('t').onkeydown=e=>e.key=='Enter'&&send();
+$('tf').onclick=()=>{const f=$('form');f.style.display=f.style.display=='flex'?'none':'flex'};
+function formAdd(full){const v=$('fs').value,q=+$('fq').value;if(!full&&$('fq').value==='')return alert('Enter a stock count or tap Full');
+ const slots=v.slice(2).split(',');addItems(slots.map(s=>{const c=SLOTS[s].capacity,w=full?c:q;return{slot:+s,product:SLOTS[s].product,capacity:c,qty:Math.min(w,c),capped:w>c}}));srcText+=(srcText?' | ':'')+'[form] '+v+' '+(full?'full':q);$('fq').value=''}
+$('fadd').onclick=()=>formAdd(false);$('ffull').onclick=()=>formAdd(true);
+fetch(API+'/gate').then(r=>r.json()).then(g=>{if(!g.gated){$('pc').style.display='none';$('pc').previousElementSibling.textContent='Enter your name (optional)';if(NAME){start()}}else if(PC)api('/auth').then(start).catch(()=>{})}).catch(()=>{});
+</script></body></html>
