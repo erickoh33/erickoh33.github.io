@@ -5,7 +5,7 @@
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Restock"><meta name="theme-color" content="#008069">
 <style>
-*{box-sizing:border-box}body{margin:0;font:16px -apple-system,system-ui,"Segoe UI",sans-serif;height:100dvh;display:flex;flex-direction:column;background:#efeae2}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:16px -apple-system,system-ui,"Segoe UI",sans-serif;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#efeae2}
 header{background:#008069;color:#fff;padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;display:flex;align-items:center;gap:10px}
 .av{width:40px;height:40px;border-radius:50%;background:#fff url(icon-192.png) center/cover}
 .hn{flex:1;line-height:1.2}.hn b{display:block;font-size:17px}.hn span{font-size:13px;opacity:.85}
@@ -23,19 +23,17 @@ table{border-collapse:collapse;font-size:14px;margin:4px 0;width:100%}td{padding
 .btns{display:flex;gap:6px;margin-top:6px}.btns button,.form button{flex:1;padding:9px;border:0;border-radius:8px;font-size:15px;font-weight:600}
 .ok{background:#008069;color:#fff}.no{background:#f0f2f5;color:#008069}
 footer{background:#f0f2f5;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);display:flex;gap:6px;align-items:center}
-footer input{flex:1;padding:10px 14px;border:0;border-radius:22px;font-size:16px;background:#fff}
+footer{position:relative;z-index:2}footer input{-webkit-appearance:none;-webkit-user-select:text;user-select:text;flex:1;padding:10px 14px;border:0;border-radius:22px;font-size:16px;background:#fff}
 footer button{width:44px;height:44px;border:0;border-radius:50%;background:#008069;color:#fff;font-size:18px}
 .form{background:#fff;padding:10px;display:none;flex-direction:column;gap:8px;border-top:1px solid #ddd}
 .form select,.form input,.form textarea{padding:10px;font-size:16px;border:1px solid #ccc;border-radius:10px;width:100%}
-.row{display:flex;gap:8px}#gate{position:fixed;inset:0;z-index:5;background:#008069;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+.row{display:flex;gap:8px}#gate{position:fixed;inset:0;z-index:5;background:#008069;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
 #gate input{font-size:28px;letter-spacing:10px;text-align:center;width:220px;padding:10px;border-radius:12px;border:0}
 #gate button{padding:12px 40px;font-size:17px;border:0;border-radius:12px;background:#fff;color:#008069;font-weight:700}
 .small{font-size:13px;color:#667781}
 </style></head><body>
-<div id="gate"><img src="icon-192.png" width="72" style="border-radius:16px"><h2 style="margin:0">Team Q Pool Bot</h2><div>Enter the 6-digit passcode</div>
-<input id="pc" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><input id="nm" placeholder="Your name (optional)" style="font-size:16px;letter-spacing:0;width:220px">
-<button id="go">Enter</button><div id="gerr"></div></div>
-<header><div class=av></div><div class=hn><b>Team Q Pool Bot</b><span id=st>online</span></div><button id="tf">Quick form</button></header>
+<div id="gate"><img src="icon-192.png" width="72" style="border-radius:16px"><h2 style="margin:0">Team Q Pool Bot</h2><div>Enter the 6-digit passcode</div><input id="pc" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><button id="go">Enter</button><div id="gerr"></div></div>
+<header><div class=av></div><div class=hn><b>Team Q Pool Bot</b><span id=st>online</span></div><button id="nmb" aria-label="Your name">👤</button><button id="tf">Quick form</button></header>
 <div id="log"></div>
 <div class="form" id="form">
  <select id="fs"></select>
@@ -55,12 +53,12 @@ let awaiting=[],choice=null,lastIssue=null;
 function showIssue(on,msg){const key=on?msg:'';if(key===lastIssue)return;const prev=lastIssue;lastIssue=key;if(on)say(esc(msg));else if(prev)say('✅ All good now, updates are back to normal. Thanks for waiting 🙏')}
 async function checkStatus(){try{const r=await fetch(API+'/status');const j=await r.json();showIssue(j.issue,j.message)}catch(e){}}
 async function api(p,b){const r=await fetch(API+p,{method:b?'POST':'GET',headers:{'content-type':'application/json','x-passcode':PC},body:b?JSON.stringify(b):undefined});const j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j}
-async function login(){PC=$('pc').style.display=='none'?'':$('pc').value.trim();NAME=$('nm').value.trim();try{await api('/auth');sessionStorage.pc=PC;localStorage.nm=NAME;start()}catch(e){$('gerr').textContent='Wrong passcode, try again.'}}
-$('go').onclick=login;$('pc').onkeydown=e=>e.key=='Enter'&&login();$('nm').value=NAME;
-async function start(){$('gate').style.display='none';log.insertAdjacentHTML('beforeend','<div class=day>Today</div>');setTimeout(checkStatus,800);setInterval(checkStatus,60000);SLOTS=(await api('/slots')).slots;
- const groups={};for(const[k,v]of Object.entries(SLOTS))(groups[v.product]??=[]).push(k);
- $('fs').innerHTML='<optgroup label="Product (all its slots)">'+Object.entries(groups).map(([p,s])=>`<option value="g:${s.join(',')}">${esc(p)} (slots ${s.join(', ')})</option>`).join('')+'</optgroup><optgroup label="Single slot">'+Object.entries(SLOTS).map(([k,v])=>`<option value="s:${k}">Slot ${k} – ${esc(v.product)} (max ${v.capacity})</option>`).join('')+'</optgroup>';
- say(`Hi${NAME?' '+esc(NAME):''} 👋 What did you restock today?\nJust send like "47 48 49 full" or "24 5". Machine got problem? Just tell me 🙂`)}
+function login(){PC=$('pc').value.trim();api('/auth').then(function(){try{sessionStorage.pc=PC}catch(e){}$('gate').style.display='none';$('t').focus()}).catch(function(){$('gerr').textContent='Wrong passcode, try again.'})}
+$('go').onclick=login;$('pc').onkeydown=function(e){if(e.key=='Enter')login()};
+$('nmb').onclick=function(){var n=prompt('Your name (optional)',NAME||'');if(n!==null){NAME=n.trim();try{localStorage.nm=NAME}catch(e){}say(NAME?'Ok '+esc(NAME)+' 👍':'Ok, no name 👍')}};
+async function loadSlots(){try{SLOTS=(await api('/slots')).slots}catch(e){return}
+ const groups={};for(const[k,v]of Object.entries(SLOTS)){if(!groups[v.product])groups[v.product]=[];groups[v.product].push(k)}
+ $('fs').innerHTML='<optgroup label="Product (all its slots)">'+Object.entries(groups).map(([p,s])=>`<option value="g:${s.join(',')}">${esc(p)} (slots ${s.join(', ')})</option>`).join('')+'</optgroup><optgroup label="Single slot">'+Object.entries(SLOTS).map(([k,v])=>`<option value="s:${k}">Slot ${k} – ${esc(v.product)} (max ${v.capacity})</option>`).join('')+'</optgroup>';}
 let card=null;
 function addItems(items){for(const i of items){pending=pending.filter(p=>p.slot!=i.slot);pending.push(i)}pending.sort((a,b)=>a.slot-b.slot);confirmCard()}
 function confirmCard(){
@@ -70,7 +68,7 @@ function confirmCard(){
  const html=`<b>Please confirm:</b><table><tr class=small><td>Slot</td><td>Product</td><td class=q>New qty</td></tr>${rows}</table>${pending.some(i=>i.capped)?'<div class=small>⚠️ capped at slot capacity</div>':''}<input placeholder="Add a note (optional)" class=nt style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px;margin-top:6px;font-size:15px"><div class=btns><button class=ok>✅ Confirm</button><button class=no>✏️ Edit</button></div><div class=small>Wrong? Just type e.g. "47 only 5" or "cancel 49".</div>`;
  if(card)card.remove();card=say(html);card.querySelector('.nt').value=keep||'';
  const [ok,no]=card.querySelectorAll('button');ok.onclick=()=>submit(card);no.onclick=()=>{say('Ok, what to change? E.g. "47 only 5", "cancel 49" or "clear all".');$('t').focus()}}
-async function submit(d){if(d.querySelector('.nt'))note=d.querySelector('.nt').value.trim();d.querySelector('.btns')?.remove();card=null;
+async function submit(d){if(d.querySelector('.nt'))note=d.querySelector('.nt').value.trim();var bt=d.querySelector('.btns');if(bt)bt.remove();card=null;
  try{const r=await api('/submit',{items:pending.map(i=>({slot:String(i.slot),qty:i.qty})),name:NAME,note,text:srcText});
  say(`Done ✅ Saved ${pending.length} slot(s)${note?' + note':''}. Thanks${NAME?' '+esc(NAME):''}! 🙏`);if(r.issue){lastIssue=null;showIssue(true,r.message)}else checkStatus();pending=[];srcText='';note=''}catch(e){say('Could not save: '+esc(e.message))}}
 async function send(){const t=$('t').value.trim();if(!t)return;$('t').value='';say(esc(t),'me');
@@ -83,10 +81,17 @@ async function send(){const t=$('t').value.trim();if(!t)return;$('t').value='';s
   if(r.confirm&&(pending.length||note)){const d=card||say('');if(card)note=card.querySelector('.nt').value.trim()||note;submit(d);return}
   confirmCard()}
  catch(e){w.remove();say('Aiyo, something went wrong ('+e.message+'). Try again or use Quick form 🙏')}}
-$('send').onclick=send;$('t').onkeydown=e=>e.key=='Enter'&&send();
+$('send').onclick=send;$('t').onkeydown=function(e){if(e.key=='Enter'){e.preventDefault();send()}};
 $('tf').onclick=()=>{const f=$('form');f.style.display=f.style.display=='flex'?'none':'flex'};
 function formAdd(full){const v=$('fs').value,q=+$('fq').value;if(!full&&$('fq').value==='')return alert('Enter a stock count or tap Full');
  const slots=v.slice(2).split(',');addItems(slots.map(s=>{const c=SLOTS[s].capacity,w=full?c:q;return{slot:+s,product:SLOTS[s].product,capacity:c,qty:Math.min(w,c),capped:w>c}}));srcText+=(srcText?' | ':'')+'[form] '+v+' '+(full?'full':q);$('fq').value=''}
 $('fadd').onclick=()=>formAdd(false);$('ffull').onclick=()=>formAdd(true);
-fetch(API+'/gate').then(r=>r.json()).then(g=>{if(!g.gated){$('pc').style.display='none';$('pc').previousElementSibling.textContent='Enter your name (optional)';if(NAME){start()}}else if(PC)api('/auth').then(start).catch(()=>{})}).catch(()=>{});
+function init(){log.insertAdjacentHTML('beforeend','<div class=day>Today</div>');say(`Hi${NAME?' '+esc(NAME):''} 👋 What did you restock today?\nJust send like "47 48 49 full" or "24 5". Machine got problem? Just tell me 🙂`);
+ loadSlots();setTimeout(checkStatus,800);setInterval(checkStatus,60000);
+ fetch(API+'/gate').then(function(r){return r.json()}).then(function(g){if(g&&g.gated&&!PC){$('gate').style.display='flex'}}).catch(function(){});}
+document.querySelector('footer').addEventListener('click',function(e){if(e.target.id!='send')$('t').focus()});
+function fitVV(){if(window.visualViewport){document.body.style.height=window.visualViewport.height+'px';log.scrollTop=1e9}}
+if(window.visualViewport){visualViewport.addEventListener('resize',fitVV);fitVV()}
+window.addEventListener('error',function(){try{$('gate').style.display='none'}catch(e){}});
+init();
 </script></body></html>
