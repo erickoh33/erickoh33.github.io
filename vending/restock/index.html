@@ -59,7 +59,7 @@ async function submit(d){note=d.querySelector('.nt').value.trim();d.querySelecto
 async function send(){const t=$('t').value.trim();if(!t)return;$('t').value='';say(esc(t),'me');
  if(/^note[:\s]/i.test(t)){note=t.replace(/^note[:\s]*/i,'');if(pending.length)confirmCard();else{pending=[];const d=say(`Machine note: "${esc(note)}"<div class=btns><button class=ok>✅ Send note</button></div><input class=nt type=hidden value="${esc(note)}">`);d.querySelector('button').onclick=()=>submit(d)}return}
  srcText+=(srcText?' | ':'')+t;const w=say('…');
- try{const r=await api('/parse',{text:t});w.remove();if(r.unknown?.length)say('I couldn\'t read: '+esc(r.unknown.join(', '))+'. Try "slot 12 is 5" or "slot 12 full".');if(r.items.length)addItems(r.items)}catch(e){w.textContent='Error: '+e.message}}
+ try{const r=await api('/parse',{text:t});w.remove();if(r.unknown?.length)say('I couldn\'t read: '+esc(r.unknown.join(', '))+'. Try "slot 12 is 5" or "slot 12 full".');if(r.items.length)addItems(r.items);else if(!r.unknown?.length)say('I didn\'t see any slot numbers there. Tell me what you restocked, e.g. "47 48 49 full" or "24 5", or tap <b>Quick form</b>. For a machine issue, start with "note:".')}catch(e){w.textContent='Error: '+e.message}}
 $('send').onclick=send;$('t').onkeydown=e=>e.key=='Enter'&&send();
 $('tf').onclick=()=>{const f=$('form');f.style.display=f.style.display=='flex'?'none':'flex'};
 function formAdd(full){const v=$('fs').value,q=+$('fq').value;if(!full&&$('fq').value==='')return alert('Enter a stock count or tap Full');
