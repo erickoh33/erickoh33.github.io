@@ -272,6 +272,7 @@
     }
     @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
+<link rel="stylesheet" href="parallax.css">
 </head>
 <body>
 
@@ -320,6 +321,7 @@
   <main id="top">
     <!-- HERO -->
     <section class="hero">
+      <div class="px-hero" aria-hidden="true"><div class="px-layer px-l1" data-speed="-0.35"></div><div class="px-layer px-l2" data-speed="-0.18"><span></span><span></span><span></span></div></div>
       <div class="wrap hero-grid">
         <div>
           <span class="eyebrow">Now recruiting · Klang Valley</span>
@@ -397,6 +399,7 @@
     </section>
 
     <!-- UNDERSTAND YOUR NEEDS / CALCULATORS -->
+    <div class="px-band" aria-hidden="true"><div class="px-layer b1" data-speed="0.25"></div><p>Smarter selling starts here.</p></div>
     <section id="calculators" class="needs">
       <div class="wrap needs-grid">
         <div>
@@ -489,6 +492,7 @@
     </section>
 
     <!-- WHAT YOU'LL LEARN -->
+    <div class="px-band" aria-hidden="true"><div class="px-layer b2" data-speed="0.3"></div><p>Learn the tools. Grow with the team.</p></div>
     <section id="learn" class="learn">
       <div class="wrap">
         <div class="section-head">
@@ -561,6 +565,7 @@
     </section>
 
     <!-- FAQ -->
+    <div class="px-band" aria-hidden="true"><div class="px-layer b1" data-speed="0.25"></div><p>Your next chapter could start with a coffee.</p></div>
     <section id="faq" class="faq">
       <div class="wrap">
         <div class="section-head">
@@ -616,6 +621,7 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+<script src="parallax.js" defer></script>
 <link rel="stylesheet" href="chat/rintiz-chat.css">
 <script src="chat/rintiz-chat.js" data-endpoint="https://rintiz-chat.erickoh33.workers.dev" defer></script>
 </body>
