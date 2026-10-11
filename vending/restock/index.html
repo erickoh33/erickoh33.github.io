@@ -49,9 +49,7 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[
 const hm=()=>new Date().toLocaleTimeString('en-MY',{hour:'numeric',minute:'2-digit'}).toLowerCase();
 function say(html,who='bot'){const d=document.createElement('div');d.className='m '+who;d.innerHTML=html+`<span class=ts>${hm()}${who=='me'?'<span class=tk>✓✓</span>':''}</span>`;log.appendChild(d);log.scrollTop=1e9;return d}
 function typing(){$('st').textContent='typing…';const d=document.createElement('div');d.className='m bot typing';d.style.paddingBottom='9px';d.innerHTML='<span></span><span></span><span></span>';log.appendChild(d);log.scrollTop=1e9;return{remove(){d.remove();$('st').textContent='online'}}}
-let awaiting=[],choice=null,lastIssue=null;
-function showIssue(on,msg){const key=on?msg:'';if(key===lastIssue)return;const prev=lastIssue;lastIssue=key;if(on)say(esc(msg));else if(prev)say('✅ All good now, updates are back to normal. Thanks for waiting 🙏')}
-async function checkStatus(){try{const r=await fetch(API+'/status');const j=await r.json();showIssue(j.issue,j.message)}catch(e){}}
+let awaiting=[],choice=null;
 async function api(p,b){const r=await fetch(API+p,{method:b?'POST':'GET',headers:{'content-type':'application/json','x-passcode':PC},body:b?JSON.stringify(b):undefined});const j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j}
 function login(){PC=$('pc').value.trim();api('/auth').then(function(){try{sessionStorage.pc=PC}catch(e){}$('gate').style.display='none';$('t').focus()}).catch(function(){$('gerr').textContent='Wrong passcode, try again.'})}
 $('go').onclick=login;$('pc').onkeydown=function(e){if(e.key=='Enter')login()};
@@ -70,7 +68,7 @@ function confirmCard(){
  const [ok,no]=card.querySelectorAll('button');ok.onclick=()=>submit(card);no.onclick=()=>{say('Ok, what to change? E.g. "47 only 5", "cancel 49" or "clear all".');$('t').focus()}}
 async function submit(d){if(d.querySelector('.nt'))note=d.querySelector('.nt').value.trim();var bt=d.querySelector('.btns');if(bt)bt.remove();card=null;
  try{const r=await api('/submit',{items:pending.map(i=>({slot:String(i.slot),qty:i.qty})),name:NAME,note,text:srcText});
- say(`Done ✅ Saved ${pending.length} slot(s)${note?' + note':''}. Thanks${NAME?' '+esc(NAME):''}! 🙏`);if(r.issue){lastIssue=null;showIssue(true,r.message)}else checkStatus();pending=[];srcText='';note=''}catch(e){say('Could not save: '+esc(e.message))}}
+ say(`Done ✅ Saved ${pending.length} slot(s)${note?' + note':''}. Thanks${NAME?' '+esc(NAME):''}! 🙏`);if(r.issue&&r.message)say(esc(r.message));pending=[];srcText='';note=''}catch(e){say('Could not save: '+esc(e.message))}}
 async function send(){const t=$('t').value.trim();if(!t)return;$('t').value='';say(esc(t),'me');
  srcText+=(srcText?' | ':'')+t;const w=typing();
  try{const r=await api('/chat',{text:t,awaiting,choice,pending:pending.map(i=>({slot:i.slot,qty:i.qty}))});await new Promise(r=>setTimeout(r,350));w.remove();awaiting=r.ask_slots||[];choice=r.choice||null;
@@ -87,7 +85,7 @@ function formAdd(full){const v=$('fs').value,q=+$('fq').value;if(!full&&$('fq').
  const slots=v.slice(2).split(',');addItems(slots.map(s=>{const c=SLOTS[s].capacity,w=full?c:q;return{slot:+s,product:SLOTS[s].product,capacity:c,qty:Math.min(w,c),capped:w>c}}));srcText+=(srcText?' | ':'')+'[form] '+v+' '+(full?'full':q);$('fq').value=''}
 $('fadd').onclick=()=>formAdd(false);$('ffull').onclick=()=>formAdd(true);
 function init(){log.insertAdjacentHTML('beforeend','<div class=day>Today</div>');say(`Hi${NAME?' '+esc(NAME):''} 👋 What did you restock today?\nJust send like "47 48 49 full" or "24 5". Machine got problem? Just tell me 🙂`);
- loadSlots();setTimeout(checkStatus,800);setInterval(checkStatus,60000);
+ loadSlots();
  fetch(API+'/gate').then(function(r){return r.json()}).then(function(g){if(g&&g.gated&&!PC){$('gate').style.display='flex'}}).catch(function(){});}
 document.querySelector('footer').addEventListener('click',function(e){if(e.target.id!='send')$('t').focus()});
 function fitVV(){if(window.visualViewport){document.body.style.height=window.visualViewport.height+'px';log.scrollTop=1e9}}
