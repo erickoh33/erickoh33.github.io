@@ -273,6 +273,8 @@
     @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
 <link rel="stylesheet" href="parallax.css">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+<link rel="stylesheet" href="anim.css">
 </head>
 <body>
 
@@ -621,7 +623,14 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('aos-on');</script>
 <script src="parallax.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script>if(!matchMedia('(max-width: 760px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"><\/script>')}</script>
+<script src="anim.js" defer></script>
 <link rel="stylesheet" href="chat/rintiz-chat.css">
 <script src="chat/rintiz-chat.js" data-endpoint="https://rintiz-chat.erickoh33.workers.dev" defer></script>
 </body>
