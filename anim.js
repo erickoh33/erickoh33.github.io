@@ -34,9 +34,4 @@
       gsap.to(o,{v:end,duration:1.6,ease:'power2.out',scrollTrigger:{trigger:b,start:'top 90%',once:true},onUpdate:function(){b.textContent=Math.round(o.v)+m[2];}});
     });
   }
-  // Vanta NET behind hero only (skip on small screens)
-  if(window.VANTA && !small){
-    var hero=document.querySelector('.hero');var d=document.createElement('div');d.className='vanta-bg';d.setAttribute('aria-hidden','true');hero.insertBefore(d,hero.firstChild);
-    try{VANTA.NET({el:d,mouseControls:true,touchControls:false,gyroControls:false,color:0xd95f57,backgroundAlpha:0,points:9,maxDistance:20,spacing:18,showDots:true,scale:1,scaleMobile:1});}catch(e){d.remove();}
-  }
 })();
