@@ -1,0 +1,23 @@
+/* Animation + UI polish layer (fine-tune only) */
+/* Button shine + lift */
+.btn{position:relative;overflow:hidden;isolation:isolate}
+.btn::after{content:"";position:absolute;top:0;left:-75%;width:50%;height:100%;z-index:-1;background:linear-gradient(110deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none}
+.btn:hover::after{left:130%}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,var(--coral-500),var(--coral-600))}
+.btn-primary:hover{box-shadow:0 16px 30px -12px rgba(217,95,87,.8)}
+/* Card lift + subtle gradient glow */
+.card,.calc-card{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,border-color .35s ease}
+.card:hover{transform:translateY(-8px);box-shadow:0 22px 40px -22px rgba(217,95,87,.45);border-color:rgba(232,119,111,.45)}
+.card{background-image:radial-gradient(120% 80% at 100% 0%,rgba(252,230,227,.55),transparent 60%)}
+.ai-card{transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.ai-card:hover{transform:translateY(-6px) rotate(-.4deg)}
+.hero h1 .accent{background:linear-gradient(90deg,var(--coral-600),var(--coral-500),var(--coral-600));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:acc-shift 6s linear infinite}
+@keyframes acc-shift{to{background-position:200% center}}
+.h1-line{display:inline-block}
+@media (prefers-reduced-motion:reduce){
+  .btn::after{display:none}
+  .hero h1 .accent{animation:none}
+  .card:hover,.ai-card:hover,.btn:hover{transform:none}
+}
+html.aos-on,html.aos-on body{overflow-x:clip}
