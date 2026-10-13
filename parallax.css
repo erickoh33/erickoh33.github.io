@@ -1,7 +1,7 @@
 /* Parallax + reveal (red & white) */
 .hero{isolation:isolate}
 .px-hero{position:absolute;inset:-12% 0 -12% 0;z-index:-1;pointer-events:none;overflow:hidden}
-.px-layer{position:absolute;inset:0;will-change:transform}
+.px-layer{position:absolute;inset:0}
 .px-l1{background:radial-gradient(60% 55% at 85% 20%,rgba(200,16,46,.16),transparent 70%),radial-gradient(45% 45% at 5% 90%,rgba(200,16,46,.10),transparent 70%)}
 .px-l2 span{position:absolute;border-radius:50%;border:2px solid rgba(200,16,46,.18)}
 .px-l2 span:nth-child(1){width:260px;height:260px;right:6%;top:8%}

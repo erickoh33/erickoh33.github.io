@@ -1,6 +1,4 @@
 /* Animation + UI polish layer (fine-tune only) */
-html.lenis,html.lenis body{height:auto}
-.lenis.lenis-smooth{scroll-behavior:auto!important}
 /* Button shine + lift */
 .btn{position:relative;overflow:hidden;isolation:isolate}
 .btn::after{content:"";position:absolute;top:0;left:-75%;width:50%;height:100%;z-index:-1;background:linear-gradient(110deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none}

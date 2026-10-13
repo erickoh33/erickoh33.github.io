@@ -69,112 +69,86 @@
   })();
 
   /* ---------------------------------------------------------
-     4. Hero: rotating 3D particle constellation (canvas)
+     4. Hero fallback: one static neon constellation.
+     Desktop fine-pointer machines get the WebGL scene instead
+     (same gate as depth3d.js), so this canvas never loops.
      --------------------------------------------------------- */
   (function constellation() {
     if (RM) return;
     var hero = doc.querySelector("main .hero");
     if (!hero) return;
+    var save = false;
+    try { save = !!(navigator.connection && navigator.connection.saveData); } catch (e) {}
+    var mem = navigator.deviceMemory || 8;
+    var touch = mq("(pointer: coarse)");
+    var use3d = !SMALL && !touch && !save && mem > 2;
+    if (use3d) return;
+
     var cv = el("canvas", "mx-canvas");
     cv.setAttribute("aria-hidden", "true");
     hero.insertBefore(cv, hero.firstChild);
-    var ctx = cv.getContext("2d");
+    var ctx = cv.getContext("2d", { alpha: true });
     if (!ctx) { cv.parentNode.removeChild(cv); return; }
 
-    var W = 0, H = 0, DPR = 1, base = 300;
-    var pts = [], N = 0;
-    var FOV = 560, ROT = 0.00013, LINK = 20000, LINKR = Math.sqrt(20000);
-    var mx = 0, my = 0, tmx = 0, tmy = 0, raf = 0, last = 0, visible = true;
-
-    function build() {
-      N = SMALL ? 22 : 46;
-      pts = [];
-      for (var i = 0; i < N; i++) {
-        var k = i + 0.5;
-        var phi = Math.acos(1 - (2 * k) / N);
-        var th = Math.PI * (1 + Math.sqrt(5)) * k;
-        pts.push({
-          x: Math.sin(phi) * Math.cos(th),
-          y: Math.sin(phi) * Math.sin(th) * 0.55,
-          z: Math.cos(phi),
-          coral: i % 9 === 0
-        });
-      }
+    var N = 18, pts = [], LINK = 18000, LINKR = Math.sqrt(LINK), FOV = 560;
+    for (var i = 0; i < N; i++) {
+      var k = i + 0.5;
+      var phi = Math.acos(1 - (2 * k) / N);
+      var th = Math.PI * (1 + Math.sqrt(5)) * k;
+      pts.push({
+        x: Math.sin(phi) * Math.cos(th),
+        y: Math.sin(phi) * Math.sin(th) * 0.55,
+        z: Math.cos(phi),
+        coral: i % 7 === 0
+      });
     }
-    function resize() {
-      DPR = Math.min(window.devicePixelRatio || 1, 2);
-      W = hero.clientWidth; H = hero.clientHeight;
+    function draw() {
+      var W = hero.clientWidth, H = hero.clientHeight;
       if (!W || !H) return;
-      cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+      cv.width = W; cv.height = H;
       cv.style.width = W + "px"; cv.style.height = H + "px";
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      base = Math.min(W, H) * 0.62 + 120;
-    }
-    function frame(ts) {
-      raf = requestAnimationFrame(frame);
-      if (!visible || doc.hidden) return;
-      if (!last) last = ts;
-      var dt = Math.min(60, ts - last); last = ts;
-      if (dt <= 0) return;
-      mx += (tmx - mx) * 0.05;
-      my += (tmy - my) * 0.05;
-      var a = ts * ROT + mx * 0.55;
-      var tilt = -0.16 + my * 0.24;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      var base = Math.min(W, H) * 0.58 + 80;
+      var a = 0.7, tilt = -0.18;
       var ca = Math.cos(a), sa = Math.sin(a), ct = Math.cos(tilt), st = Math.sin(tilt);
-      var cx = W * 0.5, cy = H * 0.45;
-      var i, j, n = pts.length, pr = [];
+      var cx = W * 0.62, cy = H * 0.42;
+      var pr = [], n = pts.length, p, s, j;
       for (i = 0; i < n; i++) {
-        var p = pts[i];
+        p = pts[i];
         var px = p.x * base, py = p.y * base, pz = p.z * base;
         var x1 = px * ca - pz * sa;
         var z1 = px * sa + pz * ca;
         var y1 = py * ct - z1 * st;
         var z2 = py * st + z1 * ct;
-        var s = FOV / (FOV + z2 + 460);
+        s = FOV / (FOV + z2 + 460);
         pr.push({ X: cx + x1 * s, Y: cy + y1 * s, s: s, coral: p.coral });
       }
       ctx.clearRect(0, 0, W, H);
       ctx.lineWidth = 1;
       for (i = 0; i < n; i++) {
         for (j = i + 1; j < n; j++) {
-          var dx = pr[i].X - pr[j].X, dy = pr[i].Y - pr[j].Y;
-          var d2 = dx * dx + dy * dy;
+          var dx = pr[i].X - pr[j].X, dy = pr[i].Y - pr[j].Y, d2 = dx * dx + dy * dy;
           if (d2 > LINK) continue;
-          var d = Math.sqrt(d2);
-          var al = (1 - d / LINKR) * 0.20 * ((pr[i].s + pr[j].s) / 2);
-          if (al < 0.012) continue;
-          ctx.strokeStyle = "rgba(14,110,106," + al.toFixed(3) + ")";
+          var al = (1 - Math.sqrt(d2) / LINKR) * 0.34 * ((pr[i].s + pr[j].s) / 2);
+          if (al < 0.03) continue;
+          ctx.strokeStyle = "rgba(46,242,214," + al.toFixed(3) + ")";
           ctx.beginPath(); ctx.moveTo(pr[i].X, pr[i].Y); ctx.lineTo(pr[j].X, pr[j].Y); ctx.stroke();
         }
       }
       for (i = 0; i < n; i++) {
         var q = pr[i];
         ctx.beginPath();
-        ctx.fillStyle = q.coral ? "rgba(232,119,111,.72)" : "rgba(21,154,147,.60)";
-        ctx.arc(q.X, q.Y, Math.max(1.2, 3.3 * q.s), 0, TAU);
+        ctx.fillStyle = q.coral ? "rgba(255,111,181,.85)" : "rgba(46,242,214,.8)";
+        ctx.arc(q.X, q.Y, Math.max(1.4, 3.1 * q.s), 0, TAU);
         ctx.fill();
       }
     }
-    function start() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
-    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
-
-    resize(); build();
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (es) {
-        es.forEach(function (en) { visible = en.isIntersecting; });
-      }, { threshold: 0 }).observe(hero);
-    }
-    doc.addEventListener("visibilitychange", function () { if (doc.hidden) stop(); else start(); });
-    window.addEventListener("resize", function () { resize(); build(); }, { passive: true });
-    if (FINE) {
-      hero.addEventListener("pointermove", function (e) {
-        var r = hero.getBoundingClientRect();
-        tmx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-        tmy = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      }, { passive: true });
-      hero.addEventListener("pointerleave", function () { tmx = 0; tmy = 0; });
-    }
-    start();
+    draw();
+    var pending = 0;
+    window.addEventListener("resize", function () {
+      if (pending) return;
+      pending = requestAnimationFrame(function () { pending = 0; draw(); });
+    }, { passive: true });
   })();
 
   /* ---------------------------------------------------------
@@ -251,7 +225,6 @@
 
   /* Fail-safe: after 7s make sure nothing is left hidden */
   window.setTimeout(function () {
-    [].slice.call(doc.querySelectorAll("[data-aos]")).forEach(function (n) { n.classList.add("aos-animate"); });
-    [].slice.call(doc.querySelectorAll(".mx-draw,.step .dot,.mx-steps-line")).forEach(function (n) { n.classList.add("mx-in"); });
+    [].slice.call(doc.querySelectorAll(".mx-draw,.step .dot,.mx-steps-line,.rv")).forEach(function (n) { n.classList.add("mx-in"); n.classList.add("in"); });
   }, 7000);
 })();
