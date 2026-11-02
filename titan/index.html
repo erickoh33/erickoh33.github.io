@@ -304,7 +304,8 @@ const U={uT:{value:0},uAmp:{value:1}};
 const V3=THREE.Vector3,C=(h)=>new THREE.Color(h);
 function patch(mat){mat.onBeforeCompile=sh=>{sh.uniforms.uT=U.uT;sh.uniforms.uAmp=U.uAmp;
  const fn=`uniform float uT;uniform float uAmp;varying vec3 vWP;varying vec3 vWN;
- float und(float x){float s=clamp((1.15-x)/4.4,0.,1.);float a=(.012+.55*pow(s,1.4))*uAmp;float f=max(0.,-1.7-x);return a*sin(1.9*x+uT)+f*f*.34*uAmp*sin(1.9*x+uT-1.6);}`;
+ float core(float x){float s=clamp((1.15-x)/4.4,0.,1.);float a=(.012+.55*pow(s,1.4))*uAmp;return a*sin(1.9*x+uT);}
+ float und(float x){if(x>-1.6)return core(x);float y0=core(-1.6),d=(core(-1.58)-y0)/.02;float ff=max(0.,-2.25-x);return y0+d*(x+1.6)+ff*ff*.55*uAmp*sin(uT-4.9);}`;
  sh.vertexShader=fn+'\n'+sh.vertexShader.replace('#include <beginnormal_vertex>',`#include <beginnormal_vertex>
   float sl=(und(position.x+.01)-und(position.x-.01))/.02;objectNormal=normalize(vec3(objectNormal.x-sl*objectNormal.y,objectNormal.y,objectNormal.z));`)
   .replace('#include <begin_vertex>','#include <begin_vertex>\n transformed.y+=und(position.x);')
@@ -318,7 +319,7 @@ const capM=patch(new THREE.MeshPhysicalMaterial({color:'#CE0037',roughness:.25,c
 const blackM=patch(new THREE.MeshPhysicalMaterial({color:'#0a0a0a',roughness:.35,clearcoat:.8}));
 const lensM=patch(new THREE.MeshPhysicalMaterial({color:'#ff2050',metalness:1,roughness:.05}));
 const snorM=patch(new THREE.MeshPhysicalMaterial({color:'#CE0037',roughness:.3,clearcoat:1}));
-const finM=patch(new THREE.MeshPhysicalMaterial({vertexColors:true,roughness:.22,metalness:.15,clearcoat:1,clearcoatRoughness:.08,sheen:.5,sheenColor:C('#ff6b8a'),side:THREE.DoubleSide,transparent:true,opacity:.96}));
+const finM=patch(new THREE.MeshPhysicalMaterial({vertexColors:true,roughness:.22,metalness:.15,clearcoat:1,clearcoatRoughness:.08,side:THREE.DoubleSide}));
 const SKIN=C('#c48b68'),SUIT=C('#030303'),RED=C('#CE0037');
 function paint(geo){const p=geo.attributes.position,n=geo.attributes.normal,col=new Float32Array(p.count*3),c=new THREE.Color();
  for(let i=0;i<p.count;i++){const x=p.getX(i);const suit=x>-.55&&x<.98;c.copy(suit?SUIT:SKIN);
@@ -347,15 +348,22 @@ const sc=new THREE.CatmullRomCurve3([new V3(1.31,-.15,0),new V3(1.44,-.17,0),new
 body.add(new THREE.Mesh(new THREE.TubeGeometry(sc,48,.019,12),snorM));
 const mp=new THREE.SphereGeometry(.035,16,10);mp.scale(.6,.5,1.3);mp.translate(1.32,-.15,0);body.add(new THREE.Mesh(mp,blackM));
 const br=new THREE.TorusGeometry(.14,.009,8,40,Math.PI);br.rotateX(Math.PI/2);br.rotateZ(-Math.PI/2+.25);br.translate(1.42,.02,0);body.add(new THREE.Mesh(br,blackM));
-// monofin: foot pocket + flexible blade grid
-const pocket=new THREE.SphereGeometry(1,24,14);pocket.scale(.3,.065,.15);pocket.translate(-1.72,0,0);body.add(new THREE.Mesh(pocket,blackM));
-{const nu=28,nv=20,P=[],Cc=[],I=[];const c=new THREE.Color();
- for(let i=0;i<=nu;i++){const u=i/nu;const half=.15+.92*Math.pow(Math.sin(u*Math.PI*.5),1.25);
-  for(let j=0;j<=nv;j++){const v=j/nv*2-1;const x=-1.55-u*1.55-.38*v*v*u*u+.12*(1-Math.abs(v))*u*u*u;P.push(x,Math.sin(u*Math.PI)*.012,v*half);
-   const e=Math.max(u,Math.abs(v)*u);c.copy(C('#060606')).lerp(RED,Math.pow(e,2.2)*.9);if(u>.97||(Math.abs(v)>.96&&u>.3))c.copy(RED);Cc.push(c.r,c.g,c.b)}}
+// CMAS competition monofin: two side-by-side rubber foot pockets, stiff flat carbon blade,
+// concave flared shoulders (wings/rails) -> straight sides -> straight trailing edge. ~0.7m x 0.7m.
+const TILT=.38,ROOT=-1.5,LEN=1.5,HW=.75;
+const bladeY=x=>-(x-ROOT)*Math.tan(TILT)*.5+.025; // feet angled ~20deg to blade (sole side up)
+const finHW=u=>{const w=u<.55?.2+(HW-.2)*(1-Math.pow(1-u/.55,2)):HW-.02*(u-.55);const c=u>.95?Math.sqrt(Math.max(0,1-Math.pow((u-.95)/.05,2)))*.04+HW-.04:0;return u>.95?Math.min(w,c):w};
+for(const z of [-.072,.072]){const fp=new THREE.CapsuleGeometry(.085,.6,8,16);fp.rotateZ(Math.PI/2);fp.scale(1,.72,1);fp.translate(-1.9,.03,z);body.add(new THREE.Mesh(fp,blackM))}
+{const cov=new THREE.SphereGeometry(1,24,12,0,Math.PI*2,0,Math.PI/2);cov.scale(.42,.05,.17);cov.translate(-1.78,.07,0);body.add(new THREE.Mesh(cov,blackM))}
+{const nu=40,nv=40,P=[],Cc=[],I=[];const c=new THREE.Color(),CARB=C('#0d0d0f');
+ for(let i=0;i<=nu;i++){const u=i/nu;const hw=finHW(u),x=ROOT-u*LEN;
+  for(let j=0;j<=nv;j++){const v=j/nv*2-1;const z=v*hw;P.push(x,bladeY(x),z);
+   const e=.2+.5*u,wk=THREE.MathUtils.smoothstep(Math.abs(z),e-.03,e+.03)*(1-THREE.MathUtils.smoothstep(u,.56,.64));c.copy(CARB).lerp(RED,wk);if(u>.985)c.copy(RED);Cc.push(c.r,c.g,c.b)}}
  for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const a=i*(nv+1)+j,b=a+nv+1;I.push(a,b,a+1,b,b+1,a+1)}
  const fg=new THREE.BufferGeometry();fg.setAttribute('position',new THREE.Float32BufferAttribute(P,3));fg.setAttribute('color',new THREE.Float32BufferAttribute(Cc,3));fg.setIndex(I);fg.computeVertexNormals();
- body.add(new THREE.Mesh(fg,finM));}
+ body.add(new THREE.Mesh(fg,finM));
+ for(const sg of [-1,1]){const pts=[];for(let i=0;i<=24;i++){const u=i/24;const x=ROOT-u*LEN;pts.push(new V3(x,bladeY(x)+.006,sg*finHW(u)))}
+  body.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),48,.014,6),capM))}}
 body.position.x=.4; // centre the figure
 const proxy=new THREE.Mesh(new THREE.BoxGeometry(5.9,1.1,2.2),new THREE.MeshBasicMaterial({visible:false}));proxy.position.x=-.15;swimmer.add(proxy);
 swimmer.rotation.order='YZX';scene.add(swimmer);
@@ -405,7 +413,7 @@ function frame(){requestAnimationFrame(frame);if(!visible)return;const dt=Math.m
  const bob=reduce?0:Math.sin(phase-.6)*.07*U.uAmp.value;
  swimmer.position.set(P.x,P.y+off+bob,P.z);swimmer.rotation.set(.32*Math.cos(yaw)+my*.1,yaw-.22*Math.cos(yaw),pitch+(reduce?0:Math.sin(phase+.9)*.06*U.uAmp.value));
  scene.fog.color.copy(top).lerp(bottom,d);
- if(window.__t.close){cam.position.copy(swimmer.position).add(new V3(-.4,.35,4.2));cam.lookAt(swimmer.position.x-.3,swimmer.position.y,0)}
+ if(window.__t.close){cam.position.copy(swimmer.position).add(window.__t.off||new V3(-.4,.35,4.2));cam.lookAt(swimmer.position.x-.3,swimmer.position.y,0)}
  else{cam.position.x+=(mx*.4-cam.position.x)*.04;cam.position.y+=(-my*.25-cam.position.y)*.04;cam.lookAt(0,0,0)}
  renderer.render(scene,cam);}
 frame();
