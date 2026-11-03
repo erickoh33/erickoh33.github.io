@@ -142,6 +142,7 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
 @media (max-width:900px){.heroimg{background-position:30% 20%;filter:saturate(.8) brightness(.7)}}
 @media (max-width:900px){.draghint{bottom:auto;top:250px}}
 @media (max-width:420px){.locs{grid-template-columns:1fr}.logo small{display:none}}
+@media (max-width:768px){.hero{justify-content:flex-start;min-height:auto;padding-top:calc(env(safe-area-inset-top,0px) + 250px);padding-bottom:64px}.hero .kicker{font-size:14px}.hero .kicker,.hero p.sub{text-shadow:0 1px 3px #000c,0 0 14px #000a}.hero::before{content:"";position:absolute;left:-24px;right:-24px;top:220px;bottom:0;z-index:-1;background:linear-gradient(180deg,rgba(2,12,20,0) 0,rgba(2,12,20,.45) 60px,rgba(2,12,20,.45) 100%);pointer-events:none}.draghint{top:200px;bottom:auto}}
 @media (prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none}*{transition:none!important}}
 /* news */
 #news .nhead{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}
@@ -159,13 +160,25 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
 .go{font-weight:800;color:var(--cyan);white-space:nowrap}
 .allnews{display:inline-block;margin-top:22px;font-weight:800;color:var(--foam)}
 @media (max-width:700px){.nitem{grid-template-columns:1fr;gap:12px}.nt span{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+.navgame{color:#fff!important;background:var(--gold);padding:6px 12px;border-radius:999px}
+.navgame-m{display:none}
+.gamesec .gbox{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:center;background:linear-gradient(135deg,#0a0a0a,#1a0008);border:1px solid rgba(206,0,55,.45);border-radius:28px;padding:44px;box-shadow:0 30px 80px -30px rgba(206,0,55,.55)}
+.gkick{display:inline-block;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:var(--gold);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.gamesec h2{margin-bottom:16px;font-size:clamp(38px,4.6vw,68px)}.gamesec p{color:var(--off);opacity:.85;font-size:17px;line-height:1.6;margin-bottom:26px}
+.gbtn{min-height:60px;padding:0 38px;font-size:19px;font-style:italic;text-transform:uppercase}
+.gimg{position:relative;display:block;border-radius:18px;overflow:hidden;border:2px solid var(--gold)}
+.gimg img{display:block;width:100%;height:auto;transition:transform .4s}.gimg:hover img{transform:scale(1.04)}
+.gplay{position:absolute;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 8px 30px #0009}
+@media (max-width:900px){.navgame-m{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;margin-left:auto;margin-right:8px;border-radius:999px;border:1.5px solid var(--gold);color:#fff;font-weight:800;font-size:14px;text-decoration:none}
+.gamesec .gbox{grid-template-columns:1fr;padding:26px 20px;gap:24px}.gbtn{width:100%;justify-content:center}}
 </style>
 </head><body>
 <canvas id="gl" aria-hidden="true"></canvas><div id="depthTint"></div><div class="heroimg" data-slot="hero" style="background-image:url(assets/web/dive.webp)"></div>
 <div class="depth" aria-hidden="true"><span>DEPTH</span><b id="dm">0m</b><div class="bar"><i id="db"></i></div></div>
 <nav aria-label="Main">
  <a class="logo" href="#top" aria-label="Titan Finswimming Club home"><img src="assets/logo/titan-comb-dark.svg" alt="Titan" height="30" style="height:30px;width:auto"></a>
- <ul><li><a href="#why">Why Titan</a></li><li><a href="#programs">Programs</a></li><li><a href="#news">News</a></li><li><a href="#locations">Locations</a></li><li><a href="#parents">Parents</a></li></ul>
+ <ul><li><a href="#why">Why Titan</a></li><li><a href="#programs">Programs</a></li><li><a href="#news">News</a></li><li><a href="#locations">Locations</a></li><li><a href="#parents">Parents</a></li><li><a class="navgame" href="game/">Demo</a></li></ul>
+ <a class="navgame-m" href="game/">Demo</a>
  <a class="btn" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Free trial</a>
 </nav>
 <header class="hero wrap" id="top">
@@ -173,7 +186,7 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
  <div class="kicker"><i></i>Where every swim builds courage</div>
  <h1><span class="l"><span>Train smart.</span></span><span class="l"><span class="out">Race fast.</span></span><span class="l"><span class="gold">Break limits.</span></span></h1>
  <p class="sub">Finswimming for kids and juniors in Petaling Jaya, KL, Shah Alam and Tanjung Malim — from first monofin kick to the national stage.</p>
- <div class="row"><a class="btn" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Book a free trial</a><a class="btn ghost" href="#programs">See programs</a></div>
+ <div class="row"><a class="btn" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Book a free trial</a><a class="btn ghost" href="#programs">See programs</a><a class="btn ghost" href="game/">▶ Try the demo</a></div>
  <div class="scrollcue">SCROLL TO DIVE</div>
  <div id="dragHint" class="draghint" aria-hidden="true">✋ Drag the swimmer</div>
 </header>
@@ -198,6 +211,13 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
   <article class="card" data-reveal><span class="photo" data-slot="prog3" style="background-image:url(assets/web/prog3.webp)"></span><span class="lvl">03</span><span class="tag">By selection</span><h3>Competitive squad</h3><p>Structured training for swimmers racing at state, national and CMAS-level events.</p><ul><li>Race-specific sets</li><li>Meet calendar &amp; travel</li><li>National-team pathway</li></ul><a class="more" href="https://wa.me/60122864815" target="_blank" rel="noopener">Ask about the squad</a></article>
  </div>
 </div></section>
+
+<section id="game" class="gamesec"><div class="wrap"><div class="gbox" data-reveal>
+ <div class="gtxt"><span class="gkick">NEW · Interactive demo</span><h2>Try the<br><em>finswimming</em> demo.</h2>
+ <p>See finswimming in action: Apnea, Bifin, Surface and 100m Immersion. Watch the start, the underwater kick, the turn and the touch at the wall.</p>
+ <a class="btn gbtn" href="game/">▶ Try the demo</a></div>
+ <a class="gimg" href="game/" aria-label="Try the finswimming interactive demo"><img src="assets/web/game-preview.jpg" alt="Finswimming interactive demo: swimmer racing Surface with monofin and snorkel" loading="lazy" width="1069" height="438"><span class="gplay">▶</span></a>
+</div></div></section>
 
 <section id="news"><div class="wrap">
  <div class="nhead"><h2 data-reveal>Titan<br><em>News.</em></h2>
@@ -386,7 +406,7 @@ const rimB=new THREE.DirectionalLight('#6ff0ff',1.6);rimB.position.set(4,3,-4);s
 // ===== movement, drag =====
 const S=mobile?.52:1.05;swimmer.scale.setScalar(S);
 const halfH=Math.tan(THREE.MathUtils.degToRad(27.5))*8;let halfW=halfH*cam.aspect;
-const home=mobile?new V3(.15,halfH-1.45,0):new V3(halfW*.4,halfH*.5,0);
+const home=mobile?new V3(.15,halfH-halfH*2*(150/innerHeight),0):new V3(halfW*.4,halfH*.5,0);
 const P=home.clone(),vel=new V3(),target=home.clone(),anchor=home.clone();let yaw=0,pitch=0,dragging=false,used=false,idleT=0;
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2(),plane=new THREE.Plane(new V3(0,0,1),0),hit=new V3(),grabOff=new V3();
 const heroEl=document.querySelector('.hero');const hint=document.getElementById('dragHint');
@@ -434,7 +454,7 @@ addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspe
 (function(){const P=window.TITAN_POSTS||[],list=document.getElementById('newsList');
 let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
 const L={en:{read:'Read',all:'All news'},bm:{read:'Baca',all:'Semua berita'}};
-function render(){list.innerHTML=P.slice(0,4).map(p=>{const t=p[lang];return `<a class="nitem" href="news/${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')+`<a class="allnews" href="news/?lang=${lang}">${L[lang].all} →</a><a class="allnews" style="margin-left:22px;color:var(--cyan)" href="game/">Play: Finswimming events game 🎮</a>`;
+function render(){list.innerHTML=P.slice(0,4).map(p=>{const t=p[lang];return `<a class="nitem" href="news/${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')+`<a class="allnews" href="news/?lang=${lang}">${L[lang].all} →</a><a class="allnews" style="margin-left:22px;color:var(--cyan)" href="game/">Try the finswimming interactive demo ▶</a>`;
 document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===lang));}
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('titanLang',lang);render()});
 render();
