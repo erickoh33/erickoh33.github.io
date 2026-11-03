@@ -2,7 +2,7 @@
 (function(){
 const P=window.TITAN_POSTS||[],root=document.getElementById('app'),page=document.body.dataset.page;
 const q=new URLSearchParams(location.search).get('lang');
-let lang='en';
+let lang=q||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
 const L={en:{back:'← Back to news',home:'Titan home',read:'Read',title:'Titan News',sub:'Race reports, results and club stories.',trial:'Book a free trial',notfound:'Post not found.'},
  bm:{back:'← Kembali ke berita',home:'Laman utama Titan',read:'Baca',title:'Berita Titan',sub:'Laporan kejohanan, keputusan dan cerita kelab.',trial:'Tempah sesi percuma',notfound:'Berita tidak dijumpai.'}};
 const WA='https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial.';
@@ -16,7 +16,7 @@ function article(p){const t=p[lang],k=p.kl;document.title=t.title+' | Titan Fins
  h+=`<div class="cta"><p>${t.cta}</p><a class="btn" href="${WA}" target="_blank" rel="noopener">${L[lang].trial}</a></div></div>`;return h}
 function archive(){document.title=L[lang].title+' | Titan Finswimming Club';
  return `<a class="back" href="../?lang=${lang}#news">← ${L[lang].home}</a><div class="fade"><h1>Titan <em>${lang==='bm'?'Berita':'News'}</em></h1><p>${L[lang].sub}</p><div class="list">${P.map(p=>{const t=p[lang];return `<a class="nitem" href="${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')}</div></div>`}
-function medals(el){const re=/\b(gold|silver|bronze)(s?)\b/gi,w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),ns=[];while(w.nextNode())ns.push(w.currentNode);ns.forEach(n=>{if(!re.test(n.nodeValue))return;re.lastIndex=0;const f=document.createElement('span');f.innerHTML=n.nodeValue.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(re,(m,a)=>`<span class="m-${a.toLowerCase()}">${m}</span>`);n.replaceWith(...f.childNodes)})}
+function medals(el){const re=/\b(gold|silver|bronze|emas|perak|gangsa)(s?)\b/gi,w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),ns=[];while(w.nextNode())ns.push(w.currentNode);ns.forEach(n=>{if(!re.test(n.nodeValue))return;re.lastIndex=0;const f=document.createElement('span');f.innerHTML=n.nodeValue.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(re,(m,a)=>`<span class="m-${({emas:'gold',perak:'silver',gangsa:'bronze'})[a.toLowerCase()]||a.toLowerCase()}">${m}</span>`);n.replaceWith(...f.childNodes)})}
 function render(){document.documentElement.lang=lang==='bm'?'ms':'en';
  if(page==='article'){const p=P.find(x=>x.slug===document.body.dataset.slug);root.innerHTML=p?article(p):`<p>${L[lang].notfound}</p>`;medals(root)}else root.innerHTML=archive();
  document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===lang));
