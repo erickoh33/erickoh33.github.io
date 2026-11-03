@@ -48,3 +48,5 @@ footer{padding:30px 0 50px;color:var(--mute);font-size:13px;border-top:1px solid
 @media (max-width:700px){.nitem{grid-template-columns:1fr;gap:10px}.kl,.cta{padding:22px}.chip b{font-size:28px}p{font-size:16px}}
 .nr{margin:16px 0 4px;padding:14px 16px;border-radius:12px;background:var(--red);color:#fff;font-weight:800;line-height:1.4}
 .kl .note{font-size:13px;color:#666;margin-top:12px}
+
+.m-gold,.m-silver,.m-bronze{font-weight:800}.m-gold{color:#E0B83A}.m-silver{color:#C3C7CC}.m-bronze{color:#D9894A}.kl .m-gold{color:#A67C00}.kl .m-silver{color:#6E747B}.kl .m-bronze{color:#A0521F}.lang{display:none}
