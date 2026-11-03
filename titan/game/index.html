@@ -49,12 +49,12 @@ canvas{display:block;width:100%;height:auto}
 <p class="foot" id="foot"></p>
 </main>
 <script>
-const T={en:{ttl:'Finswimming <em>interactive</em> demo',dive:'Tap to dive!',kick:'Tap or hold to kick faster',fin:'Finish!',again:'Try another event',trial:'Book a free trial',foot:'A Titan Finswimming Club interactive demo. 50m pool. Apnea, Bifin and Surface race 50m; Immersion races 100m (2 lengths, surfacing at 45m to turn and at 95m to finish with a one-hand touch) breathing from a tank. Bifin and Surface have a 15m underwater limit (our swimmers surface at 14m to stay safe).',breath:'BREATH-HOLD',under:'UNDERWATER',surf:'SURFACE SWIM',
+const T={en:{ttl:'Finswimming <em>interactive</em> demo',dive:'Tap to dive!',kick:'Tap or hold to kick faster',fin:'Finish!',again:'Try another event',trial:'Book a free trial',foot:'A Titan Finswimming Club interactive demo. 50m pool. Apnea, Bifin and Surface race 50m; Immersion races 100m (2 lengths) breathing from a tank. In Bifin and Surface, swimmers may stay underwater for up to 15m after the start and turn.',breath:'BREATH-HOLD',under:'UNDERWATER',surf:'SURFACE SWIM',
  rText:'Great swim! Want to learn it for real?',
  apnea:'<b>Apnea:</b> one monofin and no snorkel. The finswimmer holds their breath and stays fully underwater all the way to the wall.',
- bifin:'<b>Bifin:</b> two bifins and a centre snorkel. Dive and swim underwater, breaking the surface around 14m (before the 15m limit), then swim freestyle arms with a bifin kick.',
- immersion:'<b>Immersion:</b> monofin and a small compressed-air cylinder held in front. Breathe from the tank and swim the whole distance underwater (100m = 2 lengths). At 45m and 95m the finswimmer surfaces: the tank swings round before the turn and is lowered before the one-hand touch, so it never touches the wall.',
- surface:'<b>Surface:</b> monofin and a centre snorkel. Dive and swim underwater, breaking the surface around 14m (before the 15m limit), then swim face-down on the surface, arms in streamline, dolphin kicking.'}};
+ bifin:'<b>Bifin:</b> two bifins and a centre snorkel. Swimmers may stay underwater for up to 15m after the start and each turn, then swim freestyle arms with a bifin kick.',
+ immersion:'<b>Immersion:</b> monofin and a small compressed-air cylinder held in front. Breathe from the tank and swim the whole distance underwater (100m = 2 lengths). The tank never touches the wall; the finswimmer finishes with a one-hand touch.',
+ surface:'<b>Surface:</b> monofin and a centre snorkel. Swimmers may stay underwater for up to 15m after the start and each turn, then swim face-down on the surface, arms in streamline, dolphin kicking.'}};
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
 const lang='en';
 let ev='apnea',W,H,s,surfY,dpr,viewM;
