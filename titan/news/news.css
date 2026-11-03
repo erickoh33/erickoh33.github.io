@@ -50,3 +50,4 @@ footer{padding:30px 0 50px;color:var(--mute);font-size:13px;border-top:1px solid
 .kl .note{font-size:13px;color:#666;margin-top:12px}
 
 .m-gold,.m-silver,.m-bronze{font-weight:800}.m-gold{color:#E0B83A}.m-silver{color:#C3C7CC}.m-bronze{color:#D9894A}.kl .m-gold{color:#A67C00}.kl .m-silver{color:#6E747B}.kl .m-bronze{color:#A0521F}
+.kl .nr .m-gold{color:#FFD86B}.kl .nr .m-silver{color:#E6E8EB}.kl .nr .m-bronze{color:#FFC08A}
