@@ -46,3 +46,5 @@ footer{padding:30px 0 50px;color:var(--mute);font-size:13px;border-top:1px solid
 .fade{animation:fade .8s var(--ease) both}@keyframes fade{from{opacity:0;transform:translateY(24px)}}
 @media (prefers-reduced-motion:reduce){.fade{animation:none}*{transition:none!important}}
 @media (max-width:700px){.nitem{grid-template-columns:1fr;gap:10px}.kl,.cta{padding:22px}.chip b{font-size:28px}p{font-size:16px}}
+.nr{margin:16px 0 4px;padding:14px 16px;border-radius:12px;background:var(--red);color:#fff;font-weight:800;line-height:1.4}
+.kl .note{font-size:13px;color:#666;margin-top:12px}
