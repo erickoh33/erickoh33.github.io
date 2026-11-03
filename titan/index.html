@@ -434,7 +434,7 @@ addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspe
 (function(){const P=window.TITAN_POSTS||[],list=document.getElementById('newsList');
 let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
 const L={en:{read:'Read',all:'All news'},bm:{read:'Baca',all:'Semua berita'}};
-function render(){list.innerHTML=P.slice(0,4).map(p=>{const t=p[lang];return `<a class="nitem" href="news/${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')+`<a class="allnews" href="news/?lang=${lang}">${L[lang].all} →</a>`;
+function render(){list.innerHTML=P.slice(0,4).map(p=>{const t=p[lang];return `<a class="nitem" href="news/${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')+`<a class="allnews" href="news/?lang=${lang}">${L[lang].all} →</a><a class="allnews" style="margin-left:22px;color:var(--cyan)" href="game/?lang=${lang}">${lang==='bm'?'Main: Permainan acara finswimming':'Play: Finswimming events game'} 🎮</a>`;
 document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===lang));}
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('titanLang',lang);render()});
 render();
