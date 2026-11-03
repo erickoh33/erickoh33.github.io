@@ -1,0 +1,1 @@
+Drop web photos into assets/web/ (WebP, <300KB): hero.webp (1920w), prog1-3.webp (Beginner/Pre-Comp/Squad, 900w), ach.webp (podium, 1600w), gal1-5.webp (9:16, 540w). Missing files fall back to gradients.
