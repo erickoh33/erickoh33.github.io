@@ -24,7 +24,7 @@ h1 em{font-style:inherit;color:var(--red)}
 .card b{color:var(--red)}
 .stage{position:relative;margin-top:12px;border-radius:16px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}
 canvas{display:block;width:100%;height:auto}
-.hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:9px 16px;border-radius:999px;font-weight:800;font-size:14px;white-space:nowrap;pointer-events:none}
+.hint{display:table;margin:10px auto 0;background:rgba(0,0,0,.7);padding:9px 16px;border-radius:999px;font-weight:800;font-size:14px;white-space:nowrap;pointer-events:none}
 .result{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);padding:16px}
 .result.on{display:flex}
 .result .box{background:var(--off);color:#111;border-radius:18px;padding:20px;text-align:center;max-width:420px;width:100%}
@@ -42,9 +42,10 @@ canvas{display:block;width:100%;height:auto}
 <h1 id="ttl">Finswimming <em>events</em> game</h1>
 <div class="events" role="group" aria-label="Event"><button data-ev="apnea" aria-pressed="true">Apnea</button><button data-ev="bifin" aria-pressed="false">Bifin</button><button data-ev="surface" aria-pressed="false">Surface</button></div>
 <div class="card" id="card"></div>
-<div class="stage" id="stage"><canvas id="c" aria-label="Pool"></canvas><div class="hint" id="hint"></div>
+<div class="stage" id="stage"><canvas id="c" aria-label="Pool"></canvas>
 <div class="result" id="result"><div class="box"><h2 id="rTitle"></h2><div class="t" id="rTime"></div><p id="rText"></p>
 <div class="btns"><button class="btn alt" id="again"></button><a class="btn" id="trial" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener"></a></div></div></div></div>
+<div class="hint" id="hint"></div>
 <p class="foot" id="foot"></p>
 </main>
 <script>
@@ -59,8 +60,8 @@ let ev='apnea',W,H,s,surfY,dpr,viewM;
 const G={};function reset(){Object.assign(G,{state:'ready',x:0.3,y:-1.2,ang:-0.15,blend:0,splashed:0,touch:0,v:0,t:0,p:0,arm:0,boost:0,hold:false,breath:1,bub:[],splash:[],finT:0});$('result').classList.remove('on');ui()}
 function ui(){const L=T[lang];$('ttl').innerHTML=L.ttl;$('card').innerHTML=L[ev];$('again').textContent=L.again;$('trial').textContent=L.trial;$('foot').textContent=L.foot;
  $('hint').textContent=G.state==='ready'?L.dive:L.kick;$('hint').style.display=G.state==='done'?'none':'';document.querySelectorAll('.events button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ev===ev))}
-function size(){const r=cv.parentElement.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=Math.round(Math.max(260,Math.min(W*0.55,innerHeight*0.55)));
- cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';viewM=W<600?8:13;s=Math.min(W/viewM,H/3.9);viewM=W/s;surfY=Math.max(H*0.36,1.65*s+56)}
+function size(){const r=cv.parentElement.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=Math.round(Math.max(W<600?340:260,Math.min(W*0.55,innerHeight*0.55)));
+ cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';viewM=W<600?6:13;s=Math.min(W/viewM,H/3.9);viewM=W/s;surfY=Math.max(H*0.36,1.5*s+40)}
 addEventListener('resize',size);
 document.querySelectorAll('.events button').forEach(b=>b.onclick=()=>{ev=b.dataset.ev;reset()});
 $('again').onclick=e=>{e.stopPropagation();ev={apnea:'bifin',bifin:'surface',surface:'apnea'}[ev];reset()};
@@ -68,7 +69,9 @@ const st=$('stage');
 st.addEventListener('pointerdown',e=>{if(e.target.closest('.result'))return;if(G.state==='ready'){G.state='dive';G.dt=0;ui()}else if(G.state!=='done'){G.boost=Math.min(1.6,G.boost+0.55)}G.hold=true});
 addEventListener('pointerup',()=>G.hold=false);addEventListener('pointercancel',()=>G.hold=false);
 addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();if(!e.repeat)st.dispatchEvent(new PointerEvent('pointerdown'));G.hold=true}});addEventListener('keyup',e=>{if(e.code==='Space')G.hold=false});
-const UW=ev=>ev==='apnea'?50:14, DEPTH=1.05, SURF=0.22;
+/* Event config. To add e.g. 100m Immersion later: {len:100,laps:2,fin:'mono',snorkel:true,uw:100} plus a turn at 50m. */
+const EVENTS={apnea:{len:50,fin:'mono',snorkel:false,uw:50,rise:48},bifin:{len:50,fin:'bi',snorkel:true,uw:14},surface:{len:50,fin:'mono',snorkel:true,uw:14}};
+const UW=ev=>EVENTS[ev].uw, DEPTH=1.05, SURF=0.22;
 function step(dt){const g=G;if(g.state==='ready'){g.p+=dt*1.5;return}
  if(g.state!=='done')g.t+=dt;
  if(g.state==='dive'){g.dt+=dt;const BL=0.28,FL=0.62;
@@ -80,7 +83,7 @@ function step(dt){const g=G;if(g.state==='ready'){g.p+=dt*1.5;return}
  const tgt=(g.state==='swim'?(ev==='bifin'?1.75:2.0):(ev==='apnea'?2.05:2.15))+(g.hold?0.9:0)+g.boost*0.6;
  if(g.state==='done'){g.v=0;g.p+=dt*0.6}else{g.boost=Math.max(0,g.boost-dt*1.2);g.v+=(tgt-g.v)*Math.min(1,dt*1.6);g.x+=g.v*dt;g.p+=dt*(3.2+g.v*2.4);g.arm+=dt*(2.2+g.v*0.9);}
  const head=g.x+0.95;
- if(g.state==='under'){const lim=UW(ev);let ty=DEPTH;if(ev==='apnea'&&head>46)ty=SURF+(DEPTH-SURF)*Math.max(0,(48-head)/2);if(ev!=='apnea'){const d=lim-head;if(d<4)ty=SURF+(DEPTH-SURF)*Math.max(0,d/4)}
+ if(g.state==='under'){const lim=UW(ev);let ty=DEPTH;if(EVENTS[ev].rise&&head>EVENTS[ev].rise-2)ty=SURF+(DEPTH-SURF)*Math.max(0,(EVENTS[ev].rise-head)/2);if(ev!=='apnea'){const d=lim-head;if(d<4)ty=SURF+(DEPTH-SURF)*Math.max(0,d/4)}
   const vy=(ty-g.y)*Math.min(1,dt*2.5);g.y+=vy;g.ang+=(Math.atan2(vy/dt||0,g.v)*0.8-g.ang)*Math.min(1,dt*4);
   if(ev==='apnea')g.breath=Math.max(0.08,1-g.t/40);
   if(ev!=='apnea'&&head>=lim){g.state='swim';g.y=SURF;for(let i=0;i<12;i++)g.splash.push({x:head-0.2,y:0,vx:Math.random()*1.5,vy:-1-Math.random()*1.5,l:1})}}
@@ -88,7 +91,7 @@ function step(dt){const g=G;if(g.state==='ready'){g.p+=dt*1.5;return}
  if(Math.random()<dt*(g.state==='swim'?14:9)){const fx=g.x-1.25;g.bub.push({x:fx+Math.random()*0.3,y:g.y+(Math.random()-.5)*0.3,r:0.02+Math.random()*0.05,l:1})}
  if(ev==='apnea'&&g.state==='under'&&Math.random()<dt*1.2)g.bub.push({x:head,y:g.y,r:0.03,l:1});
  if(g.state==='swim'&&Math.random()<dt*10)g.splash.push({x:g.x-1.1,y:0,vx:-.5,vy:-1-Math.random(),l:.7});
- if(g.x+1.52>=50&&g.state!=='done'){g.state='done';g.x=50-1.52;g.v=0;g.touch=1;g.y=Math.min(g.y,SURF);g.finT=g.t;setTimeout(()=>{$('rTitle').textContent=T[lang].fin+' · '+ev.charAt(0).toUpperCase()+ev.slice(1)+' 50m';$('rTime').textContent=fmt(g.finT);$('rText').textContent=T[lang].rText;$('result').classList.add('on');ui()},500)}
+ if(g.x+1.52>=EVENTS[ev].len&&g.state!=='done'){g.state='done';g.x=EVENTS[ev].len-1.52;g.ang=0;g.v=0;g.touch=1;g.y=Math.min(g.y,SURF);g.finT=g.t;setTimeout(()=>{$('rTitle').textContent=T[lang].fin+' · '+ev.charAt(0).toUpperCase()+ev.slice(1)+' 50m';$('rTime').textContent=fmt(g.finT);$('rText').textContent=T[lang].rText;$('result').classList.add('on');ui()},500)}
  g.bub.forEach(b=>{b.y-=dt*0.6;b.x+=Math.sin(b.y*8)*dt*0.1;b.l-=dt*0.5;if(b.y<0)b.l=0});g.bub=g.bub.filter(b=>b.l>0);
  g.splash.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=9*dt;p.l-=dt*1.4});g.splash=g.splash.filter(p=>p.l>0&&p.y<0.05)}
 function fmt(t){const m=Math.floor(t/60),sec=(t%60).toFixed(2).padStart(5,'0');return (m?m+':':'')+sec}
@@ -140,45 +143,50 @@ function startPose(cam){const g=G,t=g.state==='ready'?0:(1-Math.cos(Math.PI*g.bl
  ctx.fillStyle='#111';ctx.fillRect(0.05,0.03,0.09,0.06);ctx.fillStyle='#7fd4ff';ctx.fillRect(0.085,0.04,0.05,0.04);
  if(ev!=='apnea'){ctx.strokeStyle='#ffcc00';ctx.lineWidth=0.045;ctx.beginPath();ctx.moveTo(0.1,0.1);ctx.quadraticCurveTo(0.2,0.02,0.12,-0.14);ctx.lineTo(0.08,-0.25);ctx.stroke();ctx.fillStyle="#CE0037";ctx.fillRect(0.05,-0.28,0.06,0.04)}
  ctx.restore();ctx.restore()}
-function swimmer(px,py){const g=G,dolph=ev!=='bifin',onBlock=g.state==='ready',surf=g.state==='swim';
- ctx.save();ctx.translate(px,py);ctx.rotate(onBlock?0:g.ang);ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
- const p=g.p,w=onBlock?0:1;
- if(onBlock){ // crouched start pose, facing right
-  ctx.rotate(-0.25)}
- const sh={x:0.62,y:dolph?Math.sin(p+1.6)*0.04*w:0},hd={x:0.9,y:sh.y-0.02};
- const skin='#e0ac83',suit='#CE0037';
- function seg(a,b,wd,c){ctx.strokeStyle=c;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
- function leg(ph,col){const hip={x:0,y:0},kn={x:-0.46,y:Math.sin(ph)*0.12*w},an={x:-0.92,y:Math.sin(ph-0.7)*0.2*w};seg(hip,kn,0.15,col);seg(kn,an,0.11,col);return {kn,an}}
- /* Fin follows the shin line (pointed foot), blade flexes opposite to the kick with lag (water pressure). */
- function finBlade(L,ph,wide,col){const {kn,an}=L,dx=an.x-kn.x,dy=an.y-kn.y,d=Math.hypot(dx,dy)||1,ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
-  const foot={x:an.x+ux*0.13,y:an.y+uy*0.13},len=wide?0.72:0.6;
-  const flex=-Math.cos(ph-0.7-0.55)*(wide?0.2:0.24)*w; // ankle moving down (+y) -> tip trails up (-y)
-  const tip={x:foot.x+ux*len,y:foot.y+uy*len+flex},cp={x:foot.x+ux*len*0.5,y:foot.y+uy*len*0.5+flex*0.15};
-  const th=wide?0.075:0.045;
-  seg(an,foot,0.08,'#e0ac83');
-  ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(an.x-nx*th,an.y-ny*th);ctx.quadraticCurveTo(cp.x-nx*th,cp.y-ny*th,tip.x-nx*th*0.25,tip.y-ny*th*0.25);
-  ctx.lineTo(tip.x+nx*th*0.25,tip.y+ny*th*0.25);ctx.quadraticCurveTo(cp.x+nx*th,cp.y+ny*th,an.x+nx*th,an.y+ny*th);ctx.closePath();ctx.fill();
-  if(wide){ctx.strokeStyle='#CE0037';ctx.lineWidth=0.022;ctx.beginPath();ctx.moveTo(foot.x,foot.y);ctx.quadraticCurveTo(cp.x,cp.y,tip.x,tip.y);ctx.stroke()}
-  ctx.fillStyle='#333';ctx.beginPath();ctx.ellipse(an.x+ux*0.08,an.y+uy*0.08,0.11,0.065,Math.atan2(uy,ux),0,7);ctx.fill()}
- // arm behind (bifin freestyle)
+function swimmer(px,py){const g=G,surf=g.state==='swim',done=g.state==='done';
+ ctx.save();ctx.translate(px,py);ctx.rotate(g.ang);ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
+ const p=g.p,w=done?0.25:1,E=EVENTS[ev],mono=E.fin==='mono';
+ const skin='#e0ac83',skin2='#b98a68',suit='#CE0037';
+ const seg=(a,b,wd,c)=>{ctx.strokeStyle=c;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()};
+ /* Core-driven dolphin wave (monofin events): y(x)=A(x)*sin(p - K*(0.62-x)).
+    Amplitude grows from chest -> hips -> knees -> feet; head and arms stay nearly still. */
+ const K=2.1,amp=x=>x>0.62?0.015:x>0.3?0.05+(0.62-x)*0.1:x>0?0.08+(0.3-x)*0.15:0.125+(-x)*0.12;
+ const wv=x=>mono?amp(x)*Math.sin(p-K*(0.62-x))*w:0, P=x=>({x,y:wv(x)});
+ const hand=P(1.52),hd={x:0.9,y:wv(0.9)-0.02},sh=P(0.62),waist=P(0.3),hip=P(0),kn=P(-0.46),an=P(-0.92);
+ // fin: follows shin line (pointed foot); blade flexes opposite to foot velocity with lag (water pressure).
+ // 3/4 tilt: blade drawn as a planform that widens toward the tip so the viewer sees its surface.
+ function fin(kn,an,footVelPhase,o){const dx=an.x-kn.x,dy=an.y-kn.y,d=Math.hypot(dx,dy)||1,ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
+  const foot={x:an.x+ux*0.12,y:an.y+uy*0.12},len=o.len,flex=-Math.cos(footVelPhase-0.55)*o.flex*w;
+  const C=t=>({x:foot.x+ux*len*t,y:foot.y+uy*len*t+flex*t*t});
+  const N=12,top=[],bot=[];for(let i=0;i<=N;i++){const t=i/N,c=C(t),hw=o.w0+(o.w1-o.w0)*Math.pow(t,0.8);top.push({x:c.x-nx*hw*1.0,y:c.y-ny*hw*1.0});bot.push({x:c.x+nx*hw*0.55,y:c.y+ny*hw*0.55})}
+  ctx.fillStyle=o.col;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));
+  if(o.mono){const tc=C(1);ctx.quadraticCurveTo(tc.x-ux*0.12,tc.y-uy*0.12,bot[N].x,bot[N].y)}else ctx.lineTo(bot[N].x,bot[N].y);
+  for(let i=N;i>=0;i--)ctx.lineTo(bot[i].x,bot[i].y);ctx.closePath();ctx.fill();
+  // lighter top face = tilted surface toward the viewer
+  ctx.fillStyle=o.face;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));for(let i=N;i>=0;i--){const c=C(i/N);ctx.lineTo(c.x,c.y)}ctx.closePath();ctx.fill();
+  ctx.strokeStyle=o.edge;ctx.lineWidth=0.02;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();
+  seg(an,foot,0.075,o.skin);ctx.fillStyle='#2a2a2a';ctx.beginPath();ctx.ellipse(an.x+ux*0.09,an.y+uy*0.09,0.12,o.mono?0.085:0.06,Math.atan2(uy,ux),0,7);ctx.fill()}
  const armL=0.66;
- function freeArm(a,col){const hx=sh.x+Math.cos(a)*armL,hy=sh.y+Math.sin(a)*armL*0.95;seg(sh,{x:(sh.x+hx)/2+0.04,y:(sh.y+hy)/2-0.03},0.09,col);seg({x:(sh.x+hx)/2+0.04,y:(sh.y+hy)/2-0.03},{x:hx,y:hy},0.08,col)}
- if(ev==='bifin'&&surf&&!g.touch)freeArm(g.arm+Math.PI,'#b98a68');
- if(ev==='bifin'){const a1=leg(p+Math.PI,'#b98a68');finBlade(a1,p+Math.PI,false,'#000');}
- const an=leg(p,skin);
- finBlade(an,p,ev!=='bifin',ev==='bifin'?'#1a1a1a':'#111');
- // torso (suit)
- seg({x:-0.05,y:0},sh,0.3,suit);seg({x:-0.18,y:0.01},{x:0.05,y:0},0.27,suit);
- // arms
- if(ev==='bifin'&&surf&&!g.touch)freeArm(g.arm,skin);
- else if(onBlock){seg(sh,{x:1.0,y:0.45},0.08,skin)}
- else{seg(sh,{x:1.5,y:sh.y-0.02},0.085,skin);ctx.fillStyle=skin;ctx.beginPath();ctx.arc(1.52,sh.y-0.02,0.05,0,7);ctx.fill()}
- // head + cap + mask
+ function freeArm(a,col){const hx=sh.x+Math.cos(a)*armL,hy=sh.y+Math.sin(a)*armL*0.95,el={x:(sh.x+hx)/2+0.04,y:(sh.y+hy)/2-0.03};seg(sh,el,0.09,col);seg(el,{x:hx,y:hy},0.08,col)}
+ const freestyle=ev==='bifin'&&surf&&!g.touch;
+ if(freestyle)freeArm(g.arm+Math.PI,skin2);
+ if(mono){ // far leg slightly behind, both feet together in one foot pocket
+  const o={x:-0.015,y:-0.035};seg({x:hip.x+o.x,y:hip.y+o.y},{x:kn.x+o.x,y:kn.y+o.y},0.14,skin2);seg({x:kn.x+o.x,y:kn.y+o.y},{x:an.x+o.x,y:an.y+o.y},0.1,skin2);
+  seg(hip,kn,0.15,skin);seg(kn,an,0.11,skin);
+  fin(kn,an,p-K*1.54+Math.PI/2,{mono:1,len:0.74,flex:0.22,w0:0.07,w1:0.24,col:'#0d0d0d',face:'#2e2e33',edge:'#CE0037',skin})}
+ else{ // bifin: two separate fins, alternating flutter; far fin offset behind
+  const L=(ph,o)=>{const k={x:-0.46+o.x,y:Math.sin(ph)*0.12*w+o.y},a={x:-0.92+o.x,y:Math.sin(ph-0.7)*0.2*w+o.y};return {k,a}};
+  const far=L(p+Math.PI,{x:-0.02,y:-0.05}),near=L(p,{x:0,y:0});
+  seg({x:-0.02,y:-0.05},far.k,0.14,skin2);seg(far.k,far.a,0.1,skin2);fin(far.k,far.a,p+Math.PI-0.7+Math.PI/2,{len:0.6,flex:0.24,w0:0.035,w1:0.09,col:'#050505',face:'#26262b',edge:'#444',skin:skin2});
+  seg(hip,near.k,0.15,skin);seg(near.k,near.a,0.11,skin);fin(near.k,near.a,p-0.7+Math.PI/2,{len:0.6,flex:0.24,w0:0.035,w1:0.09,col:'#111',face:'#3a3a40',edge:'#CE0037',skin})}
+ // torso follows the wave: chest -> waist -> hips
+ ctx.strokeStyle=suit;ctx.lineWidth=0.3;ctx.beginPath();ctx.moveTo(hip.x-0.12,hip.y);ctx.quadraticCurveTo(waist.x,waist.y,sh.x,sh.y);ctx.stroke();
+ if(freestyle)freeArm(g.arm,skin);
+ else{seg(sh,hand,0.085,skin);ctx.fillStyle=skin;ctx.beginPath();ctx.arc(hand.x,hand.y,0.05,0,7);ctx.fill()}
  ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(hd.x,hd.y,0.13,0.11,0,0,7);ctx.fill();
  ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(hd.x-0.02,hd.y-0.03,0.13,0.09,0,Math.PI,0);ctx.fill();ctx.fillStyle='#CE0037';ctx.fillRect(hd.x-0.1,hd.y-0.05,0.08,0.025);
  ctx.fillStyle='#111';ctx.fillRect(hd.x+0.05,hd.y+0.03,0.09,0.06);ctx.fillStyle='#7fd4ff';ctx.fillRect(hd.x+0.085,hd.y+0.04,0.05,0.04);
- // centre snorkel: mouth -> up over the forehead, pointing to the sky when face-down
- if(ev!=='apnea'){ctx.strokeStyle='#ffcc00';ctx.lineWidth=0.045;ctx.beginPath();ctx.moveTo(hd.x+0.1,hd.y+0.1);ctx.quadraticCurveTo(hd.x+0.2,hd.y+0.02,hd.x+0.12,hd.y-0.14);ctx.lineTo(hd.x+0.08,hd.y-0.25);ctx.stroke();ctx.fillStyle="#CE0037";ctx.fillRect(hd.x+0.05,hd.y-0.28,0.06,0.04)}
+ if(E.snorkel){ctx.strokeStyle='#ffcc00';ctx.lineWidth=0.045;ctx.beginPath();ctx.moveTo(hd.x+0.1,hd.y+0.1);ctx.quadraticCurveTo(hd.x+0.2,hd.y+0.02,hd.x+0.12,hd.y-0.14);ctx.lineTo(hd.x+0.08,hd.y-0.25);ctx.stroke();ctx.fillStyle='#CE0037';ctx.fillRect(hd.x+0.05,hd.y-0.28,0.06,0.04)}
  ctx.restore()}
 function hud(cam){const g=G,L=T[lang],m=W<600;ctx.font=`900 italic ${m?22:28}px Saira`;ctx.textAlign='left';ctx.fillStyle='#F1F0EF';ctx.fillText(fmt(g.t),14,m?30:38);
  const d=Math.max(0,Math.min(50,g.x+0.95));ctx.font='800 12px Manrope';ctx.fillStyle='#9aa3a8';ctx.fillText(d.toFixed(1)+' / 50m',14,m?48:58);
