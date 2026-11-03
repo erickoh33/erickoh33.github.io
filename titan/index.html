@@ -171,6 +171,16 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
 .gplay{position:absolute;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 8px 30px #0009}
 @media (max-width:900px){.navgame-m{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;margin-left:auto;margin-right:8px;border-radius:999px;border:1.5px solid var(--gold);color:#fff;font-weight:800;font-size:14px;text-decoration:none}
 .gamesec .gbox{grid-template-columns:1fr;padding:26px 20px;gap:24px}.gbtn{width:100%;justify-content:center}}
+
+#social{background:var(--off);color:#000}#social h2 em{color:#CE0037}#social .lead{color:#3a3a3a}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:44px}
+.sgrid a{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#000 center/cover}
+.sgrid a::after{content:"";position:absolute;inset:0;background:#CE0037;opacity:0;transition:.3s}.sgrid a:hover::after{opacity:.35}
+.sgrid a span{position:absolute;left:10px;bottom:8px;z-index:1;color:#fff;font:900 italic 13px var(--body);text-transform:uppercase;text-shadow:0 1px 6px #000}
+.sbtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.sbtns a{text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;font:900 italic 15px var(--body);text-transform:uppercase;letter-spacing:.03em;background:#000;color:#F1F0EF;min-height:48px}
+.sbtns a.ig{background:#CE0037}.sbtns a svg{width:20px;height:20px}.sbtns small{font-weight:600;font-style:normal;opacity:.75;text-transform:none}
+@media(max-width:700px){.sgrid{grid-template-columns:repeat(2,1fr)}.sbtns a{flex:1 1 100%;justify-content:center}}
 </style>
 </head><body>
 <canvas id="gl" aria-hidden="true"></canvas><div id="depthTint"></div><div class="heroimg" data-slot="hero" style="background-image:url(assets/web/dive.webp)"></div>
@@ -249,6 +259,17 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
  <p class="ph">Reel covers from the club's socials. Tap to watch; live embeds come later.</p>
 </div></section>
 
+<section id="social"><div class="wrap">
+ <h2 data-reveal><span data-en="Follow the" data-bm="Ikuti">Follow the</span><br><em>Titans.</em></h2>
+ <p class="lead" data-reveal data-en="Latest from the pool, meets and training — follow us for every race." data-bm="Terkini dari kolam, kejohanan dan latihan — ikuti kami untuk setiap perlumbaan.">Latest from the pool, meets and training — follow us for every race.</p>
+ <div class="sgrid" data-reveal><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/ig-sea-champs-2026-orange-jersey-pair.jpg)"><span>SEA Champs 2026</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/ig-reel-cover-lane-swimmer-titan-logo.jpg)"><span>In the lane</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/ig-sea-champs-2026-orange-jersey-solo.jpg)"><span>Race day</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/ig-reel-cover-pov-training-routine.jpg)"><span>Training POV</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/fb-team-orange-jerseys-group.jpg)"><span>Team Titan</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/fb-swimmers-goggles-poolside.jpg)"><span>Poolside</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/fb-swimmer-green-suit-poolside.jpg)"><span>Ready to race</span></a><a href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener" style="background-image:url(assets/social/fb-boys-gcmas-suits-chat.jpg)"><span>Squad</span></a></div>
+ <div class="sbtns" data-reveal>
+  <a class="ig" href="https://www.instagram.com/titanfinclub/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>Instagram <small>@titanfinclub</small></a>
+  <a href="https://www.tiktok.com/@titan.finswimming" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.4 2.4 1.9 4 4 4.3v3.1c-1.5 0-2.9-.5-4-1.3V15a6 6 0 11-6-6v3.2a2.8 2.8 0 102.8 2.8V3z"/></svg>TikTok <small>@titan.finswimming</small></a>
+  <a href="https://www.facebook.com/p/Titan-Finswimming-Club-61580261979093/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3a4 4 0 00-4 4v2H8v4h2v7h4v-7h3l1-4h-4V8z"/></svg>Facebook <small>Section 51A PJ</small></a>
+  <a href="https://wa.me/60122864815" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2z"/></svg>WhatsApp <small>012-286 4815</small></a>
+ </div>
+</div></section>
 <section id="parents"><div class="wrap"><div class="parents">
  <div><h2 data-reveal style="font-size:clamp(44px,6vw,84px)">The parent<br><em>portal.</em></h2>
  <p class="lead" data-reveal>Everything in one place: book sessions, pay fees online, register for meets and get club announcements.</p>
@@ -455,7 +476,7 @@ addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspe
 let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
 const L={en:{read:'Read',all:'All news'},bm:{read:'Baca',all:'Semua berita'}};
 function render(){list.innerHTML=P.slice(0,4).map(p=>{const t=p[lang];return `<a class="nitem" href="news/${p.slug}/?lang=${lang}"><span class="meta"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span></span><span class="nt"><b>${t.title}</b><span>${t.teaser}</span></span><span class="go">${L[lang].read} →</span></a>`}).join('')+`<a class="allnews" href="news/?lang=${lang}">${L[lang].all} →</a><a class="allnews" style="margin-left:22px;color:var(--cyan)" href="game/">Try the finswimming interactive demo ▶</a>`;
-document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===lang));}
+document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===lang));document.querySelectorAll('#social [data-en]').forEach(e=>e.textContent=e.dataset[lang]);}
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('titanLang',lang);render()});
 render();
 if(window.gsap&&!matchMedia('(prefers-reduced-motion:reduce)').matches){gsap.from('#newsList .nitem',{opacity:0,y:30,duration:.8,stagger:.08,ease:'power3.out',scrollTrigger:{trigger:'#newsList',start:'top 90%'}})}
