@@ -14,9 +14,6 @@
 html,body{background:#000;color:var(--off);font-family:var(--body);-webkit-font-smoothing:antialiased}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(206,0,55,.3)}
 header img{height:26px;display:block}
-.lang{display:inline-flex;border:1.5px solid rgba(241,240,239,.3);border-radius:999px;padding:3px}
-.lang button{font:800 12px var(--body);background:none;color:var(--mute);border:0;border-radius:999px;padding:8px 14px;min-height:36px;cursor:pointer}
-.lang button[aria-pressed=true]{background:var(--red);color:#fff}
 main{width:min(1100px,100%);margin:0 auto;padding:18px 16px 40px}
 h1{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(28px,6vw,54px);line-height:.95;letter-spacing:-.01em}
 h1 em{font-style:inherit;color:var(--red)}
@@ -40,8 +37,7 @@ canvas{display:block;width:100%;height:auto}
 .foot{margin-top:16px;color:var(--mute);font-size:13px}
 </style></head>
 <body>
-<header><a href="../" aria-label="Titan Finswimming Club home"><img src="../assets/logo/titan-comb-dark.svg" alt="Titan"></a>
-<div class="lang" role="group" aria-label="Language"><button data-lang="en" aria-pressed="true">EN</button><button data-lang="bm" aria-pressed="false">BM</button></div></header>
+<header><a href="../" aria-label="Titan Finswimming Club home"><img src="../assets/logo/titan-comb-dark.svg" alt="Titan"></a></header>
 <main>
 <h1 id="ttl">Finswimming <em>events</em> game</h1>
 <div class="events" role="group" aria-label="Event"><button data-ev="apnea" aria-pressed="true">Apnea</button><button data-ev="bifin" aria-pressed="false">Bifin</button><button data-ev="surface" aria-pressed="false">Surface</button></div>
@@ -56,24 +52,17 @@ const T={en:{ttl:'Finswimming <em>events</em> game',dive:'Tap to dive!',kick:'Ta
  rText:'Great swim! Want to learn it for real?',
  apnea:'<b>Apnea:</b> one monofin and no snorkel. The finswimmer holds their breath and stays fully underwater all the way to the wall.',
  bifin:'<b>Bifin:</b> two bifins and a centre snorkel. Dive and go up to 15m underwater, then surface and swim freestyle arms with a bifin kick.',
- surface:'<b>Surface:</b> monofin and a centre snorkel. Dive and go up to 15m underwater, then swim face-down on the surface, arms in streamline, dolphin kicking.'},
-bm:{ttl:'Permainan <em>acara</em> finswimming',dive:'Ketik untuk terjun!',kick:'Ketik atau tekan lama untuk tendang laju',fin:'Tamat!',again:'Cuba acara lain',trial:'Tempah sesi percuma',foot:'Permainan mini Titan Finswimming Club. Kolam 50m, had 15m di bawah air untuk Bifin dan Surface.',breath:'TAHAN NAFAS',under:'BAWAH AIR',surf:'RENANG PERMUKAAN',
- rText:'Renang yang hebat! Nak belajar betul-betul?',
- apnea:'<b>Apnea:</b> satu monofin, tanpa snorkel. Perenang menahan nafas dan kekal di bawah air sepanjang jalan hingga ke dinding.',
- bifin:'<b>Bifin:</b> sepasang bifin dan snorkel tengah. Terjun dan menyelam sehingga 15m, kemudian timbul dan berenang kuak bebas dengan tendangan bifin.',
- surface:'<b>Surface:</b> monofin dan snorkel tengah. Terjun dan menyelam sehingga 15m, kemudian berenang di permukaan dengan muka ke bawah, tangan lurus ke depan dan tendangan dolphin.'}};
+ surface:'<b>Surface:</b> monofin and a centre snorkel. Dive and go up to 15m underwater, then swim face-down on the surface, arms in streamline, dolphin kicking.'}};
 const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
-let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
+const lang='en';
 let ev='apnea',W,H,s,surfY,dpr,viewM;
 const G={};function reset(){Object.assign(G,{state:'ready',x:0,y:-1.05,ang:0,v:0,t:0,p:0,arm:0,boost:0,hold:false,breath:1,bub:[],splash:[],finT:0});$('result').classList.remove('on');ui()}
 function ui(){const L=T[lang];$('ttl').innerHTML=L.ttl;$('card').innerHTML=L[ev];$('again').textContent=L.again;$('trial').textContent=L.trial;$('foot').textContent=L.foot;
- $('hint').textContent=G.state==='ready'?L.dive:L.kick;$('hint').style.display=G.state==='done'?'none':'';document.documentElement.lang=lang==='bm'?'ms':'en';
- document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang));document.querySelectorAll('.events button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ev===ev))}
+ $('hint').textContent=G.state==='ready'?L.dive:L.kick;$('hint').style.display=G.state==='done'?'none':'';document.querySelectorAll('.events button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ev===ev))}
 function size(){const r=cv.parentElement.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=Math.round(Math.max(260,Math.min(W*0.55,innerHeight*0.55)));
  cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';viewM=W<600?8:13;s=Math.min(W/viewM,H/3.9);viewM=W/s;surfY=H*0.36}
 addEventListener('resize',size);
 document.querySelectorAll('.events button').forEach(b=>b.onclick=()=>{ev=b.dataset.ev;reset()});
-document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem('titanLang',lang);ui()});
 $('again').onclick=e=>{e.stopPropagation();ev={apnea:'bifin',bifin:'surface',surface:'apnea'}[ev];reset()};
 const st=$('stage');
 st.addEventListener('pointerdown',e=>{if(e.target.closest('.result'))return;if(G.state==='ready'){G.state='dive';G.dt=0;ui()}else if(G.state!=='done'){G.boost=Math.min(1.6,G.boost+0.55)}G.hold=true});
@@ -111,9 +100,9 @@ function draw(){const g=G;ctx.setTransform(dpr,0,0,dpr,0,0);
  // distance marks
  ctx.textAlign='center';for(let m=0;m<=50;m+=5){const x=X(m);if(x<-40||x>W+40)continue;ctx.strokeStyle=m===15?'#CE0037':'#ffffff30';ctx.lineWidth=m===15?3:1;ctx.setLineDash(m===15?[]:[4,6]);ctx.beginPath();ctx.moveTo(x,surfY-s*0.25);ctx.lineTo(x,Y(1.85));ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle=m===15?'#CE0037':'#ffffffaa';ctx.font=`800 ${m===15?15:12}px Manrope`;ctx.fillText(m+'m',x,surfY-s*0.32)}
- const x15=X(15);if(x15>-50&&x15<W+50){ctx.fillStyle='#CE0037';ctx.beginPath();ctx.moveTo(x15,surfY-s*0.25);ctx.lineTo(x15+16,surfY-s*0.25+7);ctx.lineTo(x15,surfY-s*0.25+14);ctx.fill();ctx.font='800 10px Manrope';ctx.fillText(lang==='bm'?'HAD 15m':'15m LIMIT',x15,Y(1.98))}
+ const x15=X(15);if(x15>-50&&x15<W+50){ctx.fillStyle='#CE0037';ctx.beginPath();ctx.moveTo(x15,surfY-s*0.25);ctx.lineTo(x15+16,surfY-s*0.25+7);ctx.lineTo(x15,surfY-s*0.25+14);ctx.fill();ctx.font='800 10px Manrope';ctx.fillText('15m LIMIT',x15,Y(1.98))}
  // lane rope floats
- for(let m=Math.floor(cam*2)/2;m<cam+viewM+1;m+=0.5){ctx.fillStyle=(Math.round(m*2)%10<2)?'#CE0037':'#F1F0EF';ctx.beginPath();ctx.ellipse(X(m),surfY,s*0.1,s*0.06,0,0,7);ctx.fill()}
+ for(let m=Math.floor(cam*2)/2;m<cam+viewM+1;m+=0.5){ctx.fillStyle=(Math.round(m*2)%10<2)?'#CE0037':'#F1F0EF';ctx.globalAlpha=.55;ctx.beginPath();ctx.ellipse(X(m),surfY-s*0.12,s*0.07,s*0.045,0,0,7);ctx.fill();ctx.globalAlpha=1}
  // walls & block
  ctx.fillStyle='#d9d9d9';ctx.fillRect(X(-3),surfY-s*0.25,X(0)-X(-3),H);ctx.fillStyle='#bbb';ctx.fillRect(X(50),surfY-s*0.25,s*3,H);
  ctx.fillStyle='#CE0037';ctx.fillRect(X(-0.7),surfY-s*0.85,s*0.75,s*0.6);ctx.fillStyle='#000';ctx.font=`900 italic ${Math.round(s*0.22)}px Saira`;ctx.fillText('T',X(-0.32),surfY-s*0.43);
