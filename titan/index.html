@@ -143,13 +143,45 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
 @media (max-width:900px){.draghint{bottom:auto;top:250px}}
 @media (max-width:420px){.locs{grid-template-columns:1fr}.logo small{display:none}}
 @media (prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none}*{transition:none!important}}
+/* news */
+#news .nhead{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}
+.lang{display:inline-flex;border:1.5px solid rgba(241,240,239,.3);border-radius:999px;padding:4px}
+.lang button{font:800 13px var(--body);letter-spacing:.1em;background:none;color:var(--mute);border:0;border-radius:999px;padding:9px 16px;cursor:pointer;min-height:40px}
+.lang button[aria-pressed=true]{background:var(--gold);color:#fff}
+.post{margin-top:44px;border-radius:22px;overflow:hidden;background:rgba(10,10,10,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(206,0,55,.25)}
+.post .top{padding:40px clamp(22px,4vw,48px);background:linear-gradient(135deg,rgba(206,0,55,.35),transparent 60%)}
+.post .tag{display:inline-block;font:800 11px var(--body);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:var(--gold);padding:6px 12px;border-radius:999px}
+.post .date{color:var(--mute);font-size:13px;margin-left:12px}
+.post h3{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(26px,3.4vw,44px);line-height:1;margin:18px 0 14px;letter-spacing:-.01em}
+.post p{color:#cfd6da;line-height:1.65;font-size:16px;max-width:70ch}
+.post .body{padding:0 clamp(22px,4vw,48px) 36px}
+.kl{margin-top:30px;padding:28px;border-radius:18px;background:#F1F0EF;color:#000}
+.kl h4{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(22px,2.6vw,32px);line-height:1}
+.kl p{color:#333}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.chip{display:flex;align-items:baseline;gap:8px;padding:12px 18px;border-radius:14px;font-weight:800;background:#fff;border:2px solid #0001}
+.chip b{font-family:var(--disp);font-style:italic;font-size:34px;line-height:1}
+.chip.g b{color:#c99a00}.chip.s b{color:#8a8f96}.chip.b b{color:#a55a24}.chip.p{background:var(--gold);color:#fff}
+.kl ul,.tm ul{list-style:none;display:grid;gap:12px;margin-top:14px}
+.kl li{padding:14px 16px;background:#fff;border-radius:12px;border-left:4px solid var(--gold);line-height:1.5;font-size:15px}
+.kl li strong{display:block;font-size:16px}
+.tm{margin-top:30px}
+.tm h4{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:24px}
+.tm li{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #ffffff1a;font-size:15px}
+.tm li span{color:var(--mute)}
+.soon{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;color:var(--cyan);border:1px dashed rgba(255,77,115,.5);border-radius:999px;padding:6px 14px}
+.more{overflow:hidden;max-height:0;transition:max-height .7s var(--ease)}
+.post.open .more{max-height:3000px}
+.readmore{margin-top:26px;cursor:pointer;border:0;font-family:var(--body)}
+.post .cta{margin-top:26px;font-weight:700}
+@media (max-width:700px){.post .top{padding:28px 20px}.post .body{padding:0 20px 28px}.kl{padding:20px}.chip b{font-size:28px}}
 </style>
 </head><body>
 <canvas id="gl" aria-hidden="true"></canvas><div id="depthTint"></div><div class="heroimg" data-slot="hero" style="background-image:url(assets/web/dive.webp)"></div>
 <div class="depth" aria-hidden="true"><span>DEPTH</span><b id="dm">0m</b><div class="bar"><i id="db"></i></div></div>
 <nav aria-label="Main">
  <a class="logo" href="#top" aria-label="Titan Finswimming Club home"><img src="assets/logo/titan-comb-dark.svg" alt="Titan" height="30" style="height:30px;width:auto"></a>
- <ul><li><a href="#why">Why Titan</a></li><li><a href="#programs">Programs</a></li><li><a href="#results">Results</a></li><li><a href="#locations">Locations</a></li><li><a href="#parents">Parents</a></li></ul>
+ <ul><li><a href="#why">Why Titan</a></li><li><a href="#programs">Programs</a></li><li><a href="#results">Results</a></li><li><a href="#news">News</a></li><li><a href="#locations">Locations</a></li><li><a href="#parents">Parents</a></li></ul>
  <a class="btn" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Free trial</a>
 </nav>
 <header class="hero wrap" id="top">
@@ -193,6 +225,12 @@ footer{border-top:1px solid rgba(143,179,196,.15);padding:50px 0 40px;background
  </div>
  <div class="achphoto" data-slot="ach" data-reveal style="background:repeating-linear-gradient(115deg,transparent 0 40px,rgba(0,0,0,.3) 40px 54px),linear-gradient(160deg,#000,#CE0037)"><span>Photo slot: podium / medal photo from Penampang PREPS U12 2026</span></div>
  <div class="meets" data-reveal><div class="meet"><b>CMAS</b>Korea 2026</div><div class="meet"><b>MUFC</b>2026</div><div class="meet"><b>MAS</b>Malaysia Finswimming Team athletes</div><div class="meet"><b>JHR</b>Johor meet</div></div>
+</div></section>
+
+<section id="news"><div class="wrap">
+ <div class="nhead"><h2 data-reveal>Titan<br><em>News.</em></h2>
+ <div class="lang" role="group" aria-label="Language" data-reveal><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="bm" aria-pressed="false">BM</button></div></div>
+ <div id="newsList"></div>
 </div></section>
 
 <section id="locations" class="light"><div class="wrap">
@@ -418,5 +456,50 @@ function frame(){requestAnimationFrame(frame);if(!visible)return;const dt=Math.m
  renderer.render(scene,cam);}
 frame();
 addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();halfW=halfH*cam.aspect;bgMat.uniforms.r.value.set(innerWidth,innerHeight);clampT(target);clampT(anchor)});
+</script>
+<script>
+/* Titan News: add new posts to the top of POSTS. Each post has en/bm versions. */
+const POSTS=[{id:'sea-2026',date:{en:'3 Nov 2026',bm:'3 Nov 2026'},
+ kl:{gold:7,silver:6,bronze:2,pb:12},
+ en:{tag:'Championship',title:'Malaysia shines on home water at the 2026 SEA Finswimming Championship',
+  intro:'From 29 to 31 October, the MBJB Aquatic Centre in Johor Bahru hosted the Southeast Asia Finswimming Championship 2026 and the first-ever SEA Age Group Finswimming Championship. 137 athletes from Malaysia, Vietnam, Cambodia and Indonesia raced across 72 events. Malaysia finished <b>2nd overall with 46 gold, 54 silver and 57 bronze (157 medals)</b>, and 11 Titan swimmers were in Johor Bahru.',
+  klTitle:'Kuala Lumpur shout-out: 15 medals!',klIntro:'Our four Titans racing for Kuala Lumpur came home with 15 medals and 12 personal bests.',
+  chips:['Gold','Silver','Bronze','PBs'],
+  klList:[['Max Mito Lau (10)','4 golds from 4 races! 50m Bifin (36.37), 100m Bifin (1:24.08), 100m Surface, 50m Surface (38.47) · 3 PBs'],
+   ['Ansel Koh Ae Hao (12)','2 gold, 2 silver: gold in the 200m Bifin and 400m Bifin (5:02.31), silver in the 50m Bifin (27.16) and 100m Bifin (1:01.17) · 3 PBs'],
+   ['Thaanyaa Sasee (11)','1 gold, 2 silver, 1 bronze: gold in the 50m Bifin (28.31), silver in the 100m Bifin (1:02.56) and 200m Bifin (2:24.58), bronze in the 50m Surface · 3 PBs'],
+   ['Ryan Wong Hoong Ern (14)','2 silver, 1 bronze: silver in the 200m Bifin (2:05.34, a 7.5-second drop!) and 400m Bifin, bronze in the 50m Bifin (25.93) · 3 PBs']],
+  tmTitle:'Representing Team Malaysia 🇲🇾',tmIntro:'Seven Titans qualified for the national team.',
+  tm:[['Ehren Ae Chern Koh (11)','Bifin & Surface + 3 relays'],['Shaiful Addin Adinda Shaiful Anuar (16)','Apnea & Surface + 3 relays'],['Azmeer Zuhairi (16)','400m Bifin, 200m & 400m Immersion'],['Elson Ae Shang Koh (18)','Apnea, Immersion & Surface + 2 relays'],['Megat Muhammad Malliqie (18)','Bifin & Surface + 2 relays'],['Roxanne Hui Nee Soon (19)','Bifin & Immersion + 3 relays'],['Aidan Ae Bin Koh (20)','50/100/200m Bifin + 2 relays']],
+  soon:'Results coming soon',
+  outro:'Every early-morning session, every monofin drill and every dolphin kick went into this trip. Thank you to our swimmers, coaches and especially our parents. Vietnam hosts the next edition in 2027, and Titan is already training for it.',
+  cta:'Want your child to be part of the next chapter? Book a free trial and DM us at @titanfinclub!',more:'Read more',less:'Show less'},
+ bm:{tag:'Kejohanan',title:'Malaysia gah di laman sendiri, 11 anak Titan turut beraksi',
+  intro:'Kolam Akuatik MBJB, Johor Bahru meriah pada 29 hingga 31 Oktober dengan Kejohanan Finswimming Asia Tenggara 2026 dan Kejohanan Finswimming Kumpulan Umur Asia Tenggara yang julung kali diadakan. Seramai 137 atlet dari Malaysia, Vietnam, Kemboja dan Indonesia bersaing dalam 72 acara. Malaysia menamatkan saingan sebagai <b>naib johan keseluruhan dengan 46 emas, 54 perak dan 57 gangsa (157 pingat)</b>, dan 11 perenang Titan turut beraksi.',
+  klTitle:'Kuala Lumpur: 15 pingat untuk Titan!',klIntro:'Empat perenang Titan bersama pasukan negeri Kuala Lumpur pulang dengan 15 pingat dan 12 catatan peribadi terbaik (PB).',
+  chips:['Emas','Perak','Gangsa','PB'],
+  klList:[['Max Mito Lau (10)','Sapu bersih 4 emas! 50m Bifin (36.37), 100m Bifin (1:24.08), 100m Surface, 50m Surface (38.47) · 3 PB'],
+   ['Ansel Koh Ae Hao (12)','2 emas, 2 perak: juara 200m Bifin dan 400m Bifin (5:02.31), perak dalam 50m Bifin (27.16) dan 100m Bifin (1:01.17) · 3 PB'],
+   ['Thaanyaa Sasee (11)','1 emas, 2 perak, 1 gangsa: emas dalam 50m Bifin (28.31), perak dalam 100m Bifin (1:02.56) dan 200m Bifin (2:24.58), gangsa dalam 50m Surface · 3 PB'],
+   ['Ryan Wong Hoong Ern (14)','2 perak, 1 gangsa: perak dalam 200m Bifin (2:05.34, lebih pantas 7.5 saat!) dan 400m Bifin, gangsa dalam 50m Bifin (25.93) · 3 PB']],
+  tmTitle:'Bersama Skuad Malaysia 🇲🇾',tmIntro:'Tujuh perenang Titan terpilih menggalas cabaran negara.',
+  tm:[['Ehren Ae Chern Koh (11)','Bifin dan Surface + 3 relay'],['Shaiful Addin Adinda Shaiful Anuar (16)','Apnea dan Surface + 3 relay'],['Azmeer Zuhairi (16)','400m Bifin, 200m dan 400m Immersion'],['Elson Ae Shang Koh (18)','Apnea, Immersion dan Surface + 2 relay'],['Megat Muhammad Malliqie (18)','Bifin dan Surface + 2 relay'],['Roxanne Hui Nee Soon (19)','Bifin dan Immersion + 3 relay'],['Aidan Ae Bin Koh (20)','50m, 100m dan 200m Bifin + 2 relay']],
+  soon:'Keputusan akan dikemas kini',
+  outro:'Setiap latihan awal pagi, setiap ulangan monofin dan setiap dolphin kick akhirnya berbaloi. Terima kasih kepada para perenang, jurulatih dan terutamanya ibu bapa. Edisi seterusnya akan berlangsung di Vietnam pada 2027, dan anak-anak Titan sudah kembali berlatih.',
+  cta:'Mahu anak anda turut sama? Jom cuba sesi latihan percuma! DM kami di @titanfinclub.',more:'Baca lagi',less:'Tutup'}}];
+(function(){const list=document.getElementById('newsList');let lang='en';
+function render(){list.innerHTML=POSTS.map(p=>{const t=p[lang],k=p.kl;return `<article class="post" id="post-${p.id}">
+<div class="top"><span class="tag">${t.tag}</span><span class="date">${p.date[lang]}</span><h3>${t.title}</h3><p>${t.intro}</p></div>
+<div class="body"><div class="kl"><h4>${t.klTitle}</h4><p>${t.klIntro}</p>
+<div class="chips"><div class="chip g"><b>${k.gold}</b>${t.chips[0]}</div><div class="chip s"><b>${k.silver}</b>${t.chips[1]}</div><div class="chip b"><b>${k.bronze}</b>${t.chips[2]}</div><div class="chip p"><b>${k.pb}</b>${t.chips[3]}</div></div></div>
+<div class="more" id="more-${p.id}"><div class="kl" style="margin-top:12px"><ul>${t.klList.map(x=>`<li><strong>${x[0]}</strong>${x[1]}</li>`).join('')}</ul></div>
+<div class="tm"><h4>${t.tmTitle}</h4><p>${t.tmIntro}</p><ul>${t.tm.map(x=>`<li><strong>${x[0]}</strong><span>${x[1]}</span></li>`).join('')}</ul><span class="soon">${t.soon}</span></div>
+<p style="margin-top:26px">${t.outro}</p><p class="cta">${t.cta}</p></div>
+<button class="btn readmore" type="button" aria-expanded="false" aria-controls="more-${p.id}">${t.more}</button></div></article>`}).join('');
+list.querySelectorAll('.readmore').forEach(b=>b.onclick=()=>{const a=b.closest('.post');const o=a.classList.toggle('open');b.setAttribute('aria-expanded',o);b.textContent=o?POSTS[0][lang].less:POSTS[0][lang].more;window.ScrollTrigger&&setTimeout(()=>ScrollTrigger.refresh(),750)});}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;document.querySelectorAll('.lang button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+render();
+if(window.gsap&&!matchMedia('(prefers-reduced-motion:reduce)').matches){gsap.from('#newsList .post',{opacity:0,y:50,duration:1,ease:'power3.out',scrollTrigger:{trigger:'#newsList',start:'top 88%'}})}
+})();
 </script>
 </body></html>
