@@ -429,7 +429,7 @@ function frame(){requestAnimationFrame(frame);if(!visible)return;const dt=Math.m
 frame();
 addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();halfW=halfH*cam.aspect;bgMat.uniforms.r.value.set(innerWidth,innerHeight);clampT(target);clampT(anchor)});
 </script>
-<script src="news/posts.js"></script>
+<script src="news/posts.js?v=1793702666"></script>
 <script>
 (function(){const P=window.TITAN_POSTS||[],list=document.getElementById('newsList');
 let lang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('titanLang')||'en';if(lang!=='bm')lang='en';
