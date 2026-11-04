@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Finswimming Interactive Demo | Titan Finswimming Club</title>
+<meta name="description" content="Try Apnea, Bifin and Surface: a quick interactive finswimming demo by Titan Finswimming Club, Malaysia.">
+<meta property="og:title" content="Finswimming Interactive Demo | Titan Finswimming Club"><meta property="og:description" content="Dive in and race 50m in Apnea, Bifin or Surface.">
+<meta property="og:image" content="https://titanfins.com/assets/logo/titan-avatar.png"><meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="../assets/logo/titan-mark-crimson.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:ital,wdth,wght@0,100..125,600..900;1,100..125,700..900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#CE0037;--pink:#ff4d73;--off:#F1F0EF;--mute:#9aa3a8;--disp:'Saira',Impact,sans-serif;--body:'Manrope',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;color:var(--off);font-family:var(--body);-webkit-font-smoothing:antialiased}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(206,0,55,.3)}
+header img{height:26px;display:block}
+main{width:min(1100px,100%);margin:0 auto;padding:18px 16px 40px}
+h1{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(28px,6vw,54px);line-height:.95;letter-spacing:-.01em}
+h1 em{font-style:inherit;color:var(--red)}
+.events{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0 12px}
+.events button{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(16px,3.4vw,22px);padding:14px 6px;border-radius:14px;border:2px solid rgba(241,240,239,.2);background:#111;color:var(--off);cursor:pointer;min-height:56px}
+.events button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.card{background:var(--off);color:#111;border-radius:14px;padding:12px 16px;font-size:15px;line-height:1.5;min-height:66px}
+.card b{color:var(--red)}
+.stage{position:relative;margin-top:12px;border-radius:16px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}
+canvas{display:block;width:100%;height:auto}
+.hint{display:table;margin:10px auto 0;background:rgba(0,0,0,.7);padding:9px 16px;border-radius:999px;font-weight:800;font-size:14px;white-space:nowrap;pointer-events:none}
+.result{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);padding:16px}
+.result.on{display:flex}
+.result .box{background:var(--off);color:#111;border-radius:18px;padding:20px;text-align:center;max-width:420px;width:100%}
+.result h2{font-family:var(--disp);font-weight:900;font-style:italic;text-transform:uppercase;font-size:20px}
+.result .t{font-family:var(--disp);font-weight:900;font-style:italic;font-size:52px;color:var(--red);line-height:1.1}
+.result p{font-size:14px;margin:6px 0 14px}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;font:800 14px var(--body);border:0;cursor:pointer;text-decoration:none;background:var(--red);color:#fff}
+.btn.alt{background:#111;color:#fff}
+.foot{margin-top:16px;color:var(--mute);font-size:13px}
+</style></head>
+<body>
+<header><a href="../" aria-label="Titan Finswimming Club home"><img src="../assets/logo/titan-comb-dark.svg" alt="Titan"></a></header>
+<main>
+<h1 id="ttl">Finswimming <em>interactive</em> demo</h1>
+<div class="events" role="group" aria-label="Event"><button data-ev="apnea" aria-pressed="true">Apnea</button><button data-ev="bifin" aria-pressed="false">Bifin</button><button data-ev="surface" aria-pressed="false">Surface</button><button data-ev="immersion" aria-pressed="false">Immersion</button></div>
+<div class="card" id="card"></div>
+<div class="stage" id="stage"><canvas id="c" aria-label="Pool"></canvas>
+<div class="result" id="result"><div class="box"><h2 id="rTitle"></h2><div class="t" id="rTime"></div><p id="rText"></p>
+<div class="btns"><button class="btn alt" id="again"></button><a class="btn" id="trial" href="https://wa.me/60122864815?text=Hi%20Titan!%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener"></a></div></div></div></div>
+<div class="hint" id="hint"></div>
+<p class="foot" id="foot"></p>
+</main>
+<script>
+const T={en:{ttl:'Finswimming <em>interactive</em> demo',dive:'Tap to dive!',kick:'Tap or hold to kick faster',fin:'Finish!',again:'Try another event',trial:'Book a free trial',foot:'A Titan Finswimming Club interactive demo. 50m pool. Apnea, Bifin and Surface race 50m; Immersion races 100m (2 lengths) breathing from a tank. In Bifin and Surface, swimmers may stay underwater for up to 15m after the start and turn.',breath:'BREATH-HOLD',under:'UNDERWATER',surf:'SURFACE SWIM',
+ rText:'Great swim! Want to learn it for real?',
+ apnea:'<b>Apnea:</b> one monofin and no snorkel. The finswimmer holds their breath and stays fully underwater all the way to the wall.',
+ bifin:'<b>Bifin:</b> two bifins and a centre snorkel. Swimmers may stay underwater for up to 15m after the start and each turn, then swim freestyle arms with a bifin kick.',
+ immersion:'<b>Immersion:</b> monofin and a small compressed-air cylinder held in front. Breathe from the tank and swim the whole distance underwater (100m = 2 lengths). The tank never touches the wall; the finswimmer finishes with a one-hand touch.',
+ surface:'<b>Surface:</b> monofin and a centre snorkel. Swimmers may stay underwater for up to 15m after the start and each turn, then swim face-down on the surface, arms in streamline, dolphin kicking.'}};
+const $=id=>document.getElementById(id),cv=$('c'),ctx=cv.getContext('2d');
+const lang='en';
+let ev='apnea',W,H,s,surfY,dpr,viewM;
+const G={};function reset(){Object.assign(G,{state:'ready',x:0.3,y:-1.2,ang:-0.15,blend:0,splashed:0,touch:0,lunge:0,lower:0,dir:1,turn:0,camOff:0.35,v:0,t:0,p:0,arm:0,boost:0,hold:false,breath:1,bub:[],splash:[],finT:0});$('result').classList.remove('on');ui()}
+function ui(){const L=T[lang];$('ttl').innerHTML=L.ttl;$('card').innerHTML=L[ev];$('again').textContent=L.again;$('trial').textContent=L.trial;$('foot').textContent=L.foot;
+ $('hint').textContent=G.state==='ready'?L.dive:L.kick;$('hint').style.display=G.state==='done'?'none':'';document.querySelectorAll('.events button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ev===ev))}
+function size(){const r=cv.parentElement.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=Math.round(Math.max(W<600?340:260,Math.min(W*0.55,innerHeight*0.55)));
+ cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';viewM=W<600?6:13;s=Math.min(W/viewM,H/3.9);viewM=W/s;surfY=Math.max(H*0.36,1.5*s+40)}
+addEventListener('resize',size);
+document.querySelectorAll('.events button').forEach(b=>b.onclick=()=>{ev=b.dataset.ev;reset()});
+$('again').onclick=e=>{e.stopPropagation();ev={apnea:'bifin',bifin:'surface',surface:'immersion',immersion:'apnea'}[ev];reset()};
+const st=$('stage');
+st.addEventListener('pointerdown',e=>{if(e.target.closest('.result'))return;if(G.state==='ready'){G.state='dive';G.dt=0;ui()}else if(G.state!=='done'){G.boost=Math.min(1.6,G.boost+0.55)}G.hold=true});
+addEventListener('pointerup',()=>G.hold=false);addEventListener('pointercancel',()=>G.hold=false);
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();if(!e.repeat)st.dispatchEvent(new PointerEvent('pointerdown'));G.hold=true}});addEventListener('keyup',e=>{if(e.code==='Space')G.hold=false});
+/* Event config. To add e.g. 100m Immersion later: {len:100,laps:2,fin:'mono',snorkel:true,uw:100} plus a turn at 50m. */
+const EVENTS={apnea:{len:50,fin:'mono',snorkel:false,uw:50,rise:48},bifin:{len:50,fin:'bi',snorkel:true,uw:14},surface:{len:50,fin:'mono',snorkel:true,uw:14},immersion:{len:100,pool:50,depth:1.25,fin:'mono',snorkel:false,tank:true,uw:100}};
+const FR=()=>EVENTS[ev].tank?1.9:1.52; /* front of hands / tank from hip */
+const UW=ev=>EVENTS[ev].uw, DEPTH=1.05, SURF=0.22;
+function step(dt){const g=G;if(g.state==='ready'){g.p+=dt*1.5;return}
+ if(g.state!=='done')g.t+=dt;
+ if(g.state==='dive'){g.dt+=dt;const BL=0.28,FL=0.62;
+  if(g.dt<BL){g.blend=g.dt/BL;g.x=0.3;g.y=-1.2;g.ang=-0.15;return}
+  g.blend=1;const u=Math.min(1,(g.dt-BL)/FL);g.x=0.3+4*u;g.y=-1.2+1.7*u*u-0.45*u*(1-u);
+  g.ang=Math.atan2(3.4*u-0.45+0.9*u,4); /* ~40 deg entry, rigid line */
+  if(u>0.62&&!g.splashed){g.splashed=1;for(let i=0;i<24;i++)g.splash.push({x:g.x+1.2+Math.random()*0.6,y:0,vx:(Math.random()-.3)*2,vy:-2-Math.random()*3,l:1})}
+  if(u>=1){g.state='under';g.v=3.4}return}
+ const tgt=(g.state==='swim'?(ev==='bifin'?1.75:2.0):(ev==='apnea'?2.05:ev==='immersion'?2.3:2.15))+(g.hold?0.9:0)+g.boost*0.6+(g.lunge||0)*0.6;
+ if(g.state==='done'){g.v=0;g.p+=dt*0.6;if(EVENTS[ev].tank){g.y+=(0.05-g.y)*Math.min(1,dt*0.9)}}else{g.boost=Math.max(0,g.boost-dt*1.2);g.v+=(tgt-g.v)*Math.min(1,dt*1.6);if(g.state==='turn'){g.turn+=dt/1.5;g.p+=dt*2;{const ts=turnState(Math.min(1,g.turn));g.x=ts.hip;g.y=ts.y}if(g.turn>=1){g.state='under';g.dir=-1;g.turn=0;g.ang=0.15;g.v=3.8;g.x=48.0;for(let i=0;i<16;i++)g.bub.push({x:49.8,y:g.y+(Math.random()-.5)*0.6,r:0.03+Math.random()*0.05,l:1})}}else g.x+=g.v*dt*g.dir;g.p+=dt*(4+g.v*3); /* ~2.2 kicks/s at full speed */g.arm+=dt*(2.2+g.v*0.9);}
+ const E=EVENTS[ev],wallD=E.pool?(g.dir<0?g.x-FR():E.pool-g.x-FR()):E.len-g.x-FR();
+ if(g.state!=='done'&&g.state!=='turn'&&(!E.pool||g.dir<0))g.lunge=Math.max(0,Math.min(1,(1.4-wallD)/1.4));
+ const head=g.x+0.95*g.dir,front=g.x+(FR()+0.2*(g.lunge||0))*g.dir;
+ if(g.state==='under'&&E.pool&&g.dir>0&&g.x>=47.0){g.state='turn';g.turn=0;g.x=47.0;g.ang=0;for(let i=0;i<10;i++)g.bub.push({x:E.pool-0.3,y:g.y+(Math.random()-.5)*0.4,r:0.03+Math.random()*0.04,l:1})}
+ if(g.state==='under'){const lim=UW(ev);let ty=E.depth||DEPTH;if(EVENTS[ev].rise&&head>EVENTS[ev].rise-2)ty=SURF+(DEPTH-SURF)*Math.max(0,(EVENTS[ev].rise-head)/2);if(E.tank&&((g.dir>0&&head>=44)||(g.dir<0&&g.x<=6.5)))ty=SURF;if(E.uw<E.len){const d=lim-head;if(d<4)ty=SURF+(DEPTH-SURF)*Math.max(0,d/4)}
+  const vy=(ty-g.y)*Math.min(1,dt*2.5);g.y+=vy;g.ang+=(Math.atan2((vy/dt||0)*g.dir,g.v)*0.8*g.dir-g.ang)*Math.min(1,dt*4);
+  if(ev==='apnea')g.breath=Math.max(0.08,1-g.t/40);
+  if(E.uw<E.len&&head>=lim){g.state='swim';g.y=SURF;for(let i=0;i<12;i++)g.splash.push({x:head-0.2,y:0,vx:Math.random()*1.5,vy:-1-Math.random()*1.5,l:1})}}
+ if(g.state==='swim'){g.y+=(SURF-g.y)*dt*3;g.ang*=1-dt*4}
+ if(Math.random()<dt*(g.state==='swim'?14:9)){const fx=g.x-1.25*g.dir;g.bub.push({x:fx+Math.random()*0.3,y:g.y+(Math.random()-.5)*0.3,r:0.02+Math.random()*0.05,l:1})}
+ if(ev==='apnea'&&g.state==='under'&&Math.random()<dt*1.2)g.bub.push({x:head,y:g.y,r:0.03,l:1});
+ if(E.tank&&(g.state==='under'||g.state==='turn')&&(g.t%1.6)<0.35&&Math.random()<dt*30)g.bub.push({x:head+0.05*g.dir,y:g.y-0.12,r:0.025+Math.random()*0.04,l:1.4}); // regulator exhale
+ if(g.state==='swim'&&Math.random()<dt*10)g.splash.push({x:g.x-1.1,y:0,vx:-.5,vy:-1-Math.random(),l:.7});
+ const wall=E.pool?(g.dir<0?0:E.pool):E.len,finish=E.pool?(g.dir<0&&(E.tank?g.x-1.72<=0:front<=0)):front>=E.len;if(E.tank)g.lower=g.dir<0?Math.max(0,Math.min(1,(4.6-g.x)/2)):0;
+ if(finish&&g.state!=='done'){g.state='done';g.lunge=1;g.x=E.tank?1.72:wall-(FR()+0.2)*g.dir;g.ang=0;g.v=0;g.touch=1;if(!E.tank)g.y=Math.min(g.y,SURF);g.finT=g.t;setTimeout(()=>{$('rTitle').textContent=T[lang].fin+' · '+ev.charAt(0).toUpperCase()+ev.slice(1)+' '+EVENTS[ev].len+'m';$('rTime').textContent=fmt(g.finT);$('rText').textContent=T[lang].rText;$('result').classList.add('on');ui()},500)}
+ g.bub.forEach(b=>{b.y-=dt*0.6;b.x+=Math.sin(b.y*8)*dt*0.1;b.l-=dt*0.5;if(b.y<0)b.l=0});g.bub=g.bub.filter(b=>b.l>0);
+ g.splash.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=9*dt;p.l-=dt*1.4});g.splash=g.splash.filter(p=>p.l>0&&p.y<0.05)}
+function fmt(t){const m=Math.floor(t/60),sec=(t%60).toFixed(2).padStart(5,'0');return (m?m+':':'')+sec}
+function draw(){const g=G;ctx.setTransform(dpr,0,0,dpr,0,0);
+ g.camOff+=((g.dir<0?0.65:0.35)-g.camOff)*0.04;const cam=Math.max(-2.2,Math.min(50.6-viewM,g.x-viewM*g.camOff)),X=m=>(m-cam)*s,Y=m=>surfY+m*s;
+ let sky=ctx.createLinearGradient(0,0,0,surfY);sky.addColorStop(0,'#0a0a0a');sky.addColorStop(1,'#1a1a1a');ctx.fillStyle=sky;ctx.fillRect(0,0,W,surfY);
+ let wat=ctx.createLinearGradient(0,surfY,0,H);wat.addColorStop(0,'#0b6e8f');wat.addColorStop(1,'#03253a');ctx.fillStyle=wat;ctx.fillRect(0,surfY,W,H-surfY);
+ // floor + lane line
+ ctx.fillStyle='#0f3b52';ctx.fillRect(0,Y(2.05),W,H);ctx.fillStyle='#00000055';ctx.fillRect(0,Y(1.85),W,s*0.08);
+ // light rays
+ ctx.save();ctx.globalAlpha=.07;ctx.fillStyle='#fff';for(let i=-2;i<12;i++){const bx=X(Math.floor(cam/4)*4+i*4)-((performance.now()/80)%40);ctx.beginPath();ctx.moveTo(bx,surfY);ctx.lineTo(bx+s*0.8,surfY);ctx.lineTo(bx+s*2.4,H);ctx.lineTo(bx+s*1.4,H);ctx.fill()}ctx.restore();
+ // distance marks
+ const LIM=EVENTS[ev].uw<EVENTS[ev].len;ctx.textAlign='center';for(let m=0;m<=50;m+=5){const is15=LIM&&m===15;const x=X(m);if(x<-40||x>W+40)continue;ctx.strokeStyle=is15?'#CE0037':'#ffffff30';ctx.lineWidth=is15?3:1;ctx.setLineDash(is15?[]:[4,6]);ctx.beginPath();ctx.moveTo(x,surfY-s*0.25);ctx.lineTo(x,Y(1.85));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=is15?'#CE0037':'#ffffffaa';ctx.font=`800 ${is15?15:12}px Manrope`;ctx.fillText(m+'m',x,surfY-s*0.32)}
+ const x15=X(15);if(LIM&&x15>-50&&x15<W+50){ctx.fillStyle='#CE0037';ctx.beginPath();ctx.moveTo(x15,surfY-s*0.25);ctx.lineTo(x15+16,surfY-s*0.25+7);ctx.lineTo(x15,surfY-s*0.25+14);ctx.fill();ctx.font='800 10px Manrope';ctx.fillText('15m LIMIT',x15,Y(1.98))}
+ // lane rope floats
+ for(let m=Math.floor(cam*2)/2;m<cam+viewM+1;m+=0.5){ctx.fillStyle=(Math.round(m*2)%10<2)?'#CE0037':'#F1F0EF';ctx.globalAlpha=.55;ctx.beginPath();ctx.ellipse(X(m),surfY-s*0.12,s*0.07,s*0.045,0,0,7);ctx.fill();ctx.globalAlpha=1}
+ // walls & block
+ ctx.fillStyle='#d9d9d9';ctx.fillRect(X(-3),surfY-s*0.25,X(0)-X(-3),H);ctx.fillStyle='#bbb';ctx.fillRect(X(50),surfY-s*0.25,s*3,H);
+ ctx.fillStyle='#CE0037';ctx.fillRect(X(-0.7),surfY-s*0.85,s*0.75,s*0.6);ctx.fillStyle='#000';ctx.font=`900 italic ${Math.round(s*0.22)}px Saira`;ctx.fillText('T',X(-0.32),surfY-s*0.43);
+ ctx.fillStyle='#CE0037';ctx.fillRect(X(50)-3,surfY,6,s*1.4);
+ // surface wave
+ ctx.strokeStyle='#bfefff99';ctx.lineWidth=2;ctx.beginPath();for(let x=0;x<=W;x+=8){const yy=surfY+Math.sin(x*0.04+performance.now()/400)*2;x?ctx.lineTo(x,yy):ctx.moveTo(x,yy)}ctx.stroke();
+ // bubbles
+ ctx.strokeStyle='#ffffffaa';ctx.lineWidth=1.2;g.bub.forEach(b=>{ctx.globalAlpha=b.l;ctx.beginPath();ctx.arc(X(b.x),Y(b.y),b.r*s,0,7);ctx.stroke()});ctx.globalAlpha=1;
+ (g.state==='ready'||(g.state==='dive'&&g.blend<1))?startPose(cam):g.state==='turn'?turnPose(cam):swimmer(X(g.x),Y(g.y));
+ ctx.fillStyle='#ffffffdd';g.splash.forEach(p=>{ctx.globalAlpha=Math.max(0,p.l);ctx.beginPath();ctx.arc(X(p.x),Y(p.y),2.5,0,7);ctx.fill()});ctx.globalAlpha=1;
+ hud(cam)}
+const lerp=(a,b,t)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
+
+/* compressed-air cylinder held in front + regulator hose to the mouth (Immersion) */
+function drawTank(h1,h2,mouth){const dx=h2.x-h1.x,dy=h2.y-h1.y,a=Math.atan2(dy,dx),L=0.5;
+ ctx.save();ctx.translate(h1.x,h1.y);ctx.rotate(a);
+ ctx.fillStyle='#ffd400';ctx.beginPath();ctx.roundRect(-0.06,-0.055,L,0.11,0.05);ctx.fill();
+ ctx.fillStyle='#cfd3d6';ctx.fillRect(-0.12,-0.035,0.07,0.07);ctx.fillStyle='#111';ctx.fillRect(L-0.1,-0.055,0.05,0.11);ctx.fillStyle='#fff8';ctx.fillRect(0,-0.04,L-0.15,0.018);
+ ctx.restore();
+ const v={x:h1.x-Math.cos(a)*0.1,y:h1.y-Math.sin(a)*0.1};
+ ctx.strokeStyle='#111';ctx.lineWidth=0.025;ctx.beginPath();ctx.moveTo(v.x,v.y);ctx.bezierCurveTo(v.x-0.05,v.y+0.25,mouth.x+0.15,mouth.y+0.3,mouth.x,mouth.y);ctx.stroke();
+ ctx.fillStyle='#222';ctx.beginPath();ctx.arc(mouth.x,mouth.y,0.035,0,7);ctx.fill()}
+function startPose(cam){const g=G,t=g.state==='ready'?0:(1-Math.cos(Math.PI*g.blend))/2;
+ /* READY pose in world metres: block top y=-0.85, front edge x=0.05. Crouched grab start. */
+ const R={toe:{x:0.04,y:-0.86},an:{x:-0.12,y:-0.9},kn:{x:0.08,y:-1.22},hip:{x:-0.32,y:-1.3},sh:{x:0.22,y:-1.2},hd:{x:0.36,y:-1.02},hand:{x:0.06,y:-0.87},tip:{x:0.5,y:-0.42}};
+ const c=Math.cos(-0.15),sn=Math.sin(-0.15),W2=p=>({x:0.3+p.x*c-p.y*sn,y:-1.2+p.x*sn+p.y*c});
+ const S={toe:W2({x:-0.98,y:0}),an:W2({x:-0.92,y:0}),kn:W2({x:-0.46,y:0}),hip:W2({x:0,y:0}),sh:W2({x:0.62,y:0}),hd:W2({x:0.9,y:-0.02}),hand:W2({x:1.5,y:-0.02}),tip:W2({x:-1.55,y:0})};
+ if(EVENTS[ev].tank){R.hip={x:-0.3,y:-1.4};R.sh={x:0.3,y:-1.3};R.hd={x:0.47,y:-1.2};R.hand={x:0.12,y:-0.92};R.kn={x:0.02,y:-1.18}}const J={};for(const k in R)J[k]=lerp(R[k],S[k],t);
+ if(t>0&&t<1&&!EVENTS[ev].tank)J.hand.y-=Math.sin(Math.PI*t)*0.55;
+ const skin='#e0ac83',suit='#CE0037';
+ ctx.save();ctx.translate(-cam*s,surfY);ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
+ const seg=(a,b,w,col)=>{ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()};
+ const fin=(off,col)=>{const a={x:J.an.x+off,y:J.an.y},tp={x:J.tip.x+off,y:J.tip.y},d={x:tp.x-a.x,y:tp.y-a.y},L=Math.hypot(d.x,d.y)||1,n={x:-d.y/L,y:d.x/L},wd=ev==='bifin'?0.05:0.08,f=ev==='bifin'?1.2:2.8;
+  ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(a.x+n.x*wd,a.y+n.y*wd);ctx.lineTo(tp.x+n.x*wd*f,tp.y+n.y*wd*f);ctx.lineTo(tp.x-n.x*wd*f*.6,tp.y-n.y*wd*f*.6);ctx.lineTo(a.x-n.x*wd,a.y-n.y*wd);ctx.closePath();ctx.fill()};
+ if(ev==='bifin'){fin(-0.04,'#000');seg({x:J.hip.x-0.03,y:J.hip.y},{x:J.kn.x-0.04,y:J.kn.y},0.15,'#b98a68');seg({x:J.kn.x-0.04,y:J.kn.y},{x:J.an.x-0.04,y:J.an.y},0.11,'#b98a68')}
+ fin(0,ev==='bifin'?'#1a1a1a':'#111');if(ev!=='bifin')seg(J.an,J.tip,0.025,'#CE0037');
+ seg(J.hip,J.kn,0.15,skin);seg(J.kn,J.an,0.11,skin);seg(J.an,J.toe,0.08,skin);
+ seg(J.hip,J.sh,0.3,suit);
+ const el=lerp(J.sh,J.hand,0.5);seg(J.sh,el,0.09,skin);seg(el,J.hand,0.08,skin);
+ const dir=Math.atan2(J.hd.y-J.sh.y,J.hd.x-J.sh.x);ctx.save();ctx.translate(J.hd.x,J.hd.y);ctx.rotate(dir);
+ ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(0,0,0.13,0.11,0,0,7);ctx.fill();ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(-0.02,-0.03,0.13,0.09,0,Math.PI,0);ctx.fill();
+ ctx.fillStyle='#111';ctx.fillRect(0.05,0.03,0.09,0.06);ctx.fillStyle='#7fd4ff';ctx.fillRect(0.085,0.04,0.05,0.04);
+ if(EVENTS[ev].snorkel){ctx.strokeStyle='#ffcc00';ctx.lineWidth=0.045;ctx.beginPath();ctx.moveTo(0.1,0.1);ctx.quadraticCurveTo(0.2,0.02,0.12,-0.14);ctx.lineTo(0.08,-0.25);ctx.stroke();ctx.fillStyle="#CE0037";ctx.fillRect(0.05,-0.28,0.06,0.04)}
+ ctx.restore();if(EVENTS[ev].tank){const c2=Math.cos(dir),s2=Math.sin(dir),m={x:J.hd.x+0.12*c2-0.09*s2,y:J.hd.y+0.12*s2+0.09*c2},ux=J.hand.x-J.sh.x,uy=J.hand.y-J.sh.y,l=Math.hypot(ux,uy)||1;drawTank({x:J.hand.x-ux/l*0.08,y:J.hand.y-uy/l*0.08},{x:J.hand.x+ux/l*0.3,y:J.hand.y+uy/l*0.3},m)}ctx.restore()}
+/* Immersion surface turn (tank never touches the wall), t in [0,1]:
+   0-.3 at the surface the tank swings round first (points back, away from the wall), body tucks
+   .3-.6 body rotates, feet swing to the wall | .6-.76 feet planted on the wall | .76-1 push-off, going deep again */
+const TP={S:{an:{x:-0.92,y:0},kn:{x:-0.46,y:0},hip:{x:0,y:0},sh:{x:0.62,y:0},hd:{x:0.9,y:-0.02},hand:{x:1.52,y:0},tip:{x:-1.75,y:0}},
+ T:{an:{x:-0.08,y:-0.42},kn:{x:0.32,y:-0.26},hip:{x:0,y:0},sh:{x:0.42,y:0.2},hd:{x:0.56,y:0.36},hand:{x:0.32,y:0.32},tip:{x:-0.75,y:-0.6}},
+ P:{an:{x:-0.6,y:0.02},kn:{x:-0.28,y:-0.24},hip:{x:0,y:0},sh:{x:0.58,y:0.04},hd:{x:0.84,y:0.02},hand:{x:0.5,y:0.16},tip:{x:-0.6,y:-0.8}}};
+const ease=t=>t<0?0:t>1?1:(1-Math.cos(Math.PI*t))/2;
+function turnState(t){const L=(A,B,u)=>{const J={};for(const k in A)J[k]=lerp(A[k],B[k],ease(u));return J},Y=(a,b,u)=>a+(b-a)*ease(u);
+ if(t<0.3){const u=t/0.3;return{J:L(TP.S,TP.T,u*0.6),rot:0,flip:false,hip:47.0+0.5*ease(u),y:SURF,tankA:Math.PI*ease(u)}}
+ if(t<0.6){const u=(t-0.3)/0.3;return{J:TP.T,rot:Math.PI*ease(u),flipY:u>0.5,flip:false,hip:47.5+1.7*ease(u),y:Y(SURF,0.5,u),tankA:Math.PI}}
+ if(t<0.76){const u=(t-0.6)/0.16;return{J:L(TP.T,TP.P,u),rot:0,flip:true,hip:49.2+0.12*ease(u),y:0.5,tankA:Math.PI}}
+ const u=(t-0.76)/0.24;return{J:L(TP.P,TP.S,u),rot:0,flip:true,hip:49.32-1.32*ease(u),y:Y(0.5,0.85,u),tankA:Math.PI}}
+function skel(J,noTank){const skin='#e0ac83',skin2='#b98a68',suit='#CE0037';
+ const seg=(a,b,w,c)=>{ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()};
+ const o={x:-0.015,y:-0.035},O=p=>({x:p.x+o.x,y:p.y+o.y});
+ seg(O(J.hip),O(J.kn),0.14,skin2);seg(O(J.kn),O(J.an),0.1,skin2);
+ // monofin: wide blade from the foot pocket to the tip
+ const dx=J.tip.x-J.an.x,dy=J.tip.y-J.an.y,l=Math.hypot(dx,dy)||1,nx=-dy/l,ny=dx/l;
+ ctx.fillStyle='#0d0d0d';ctx.beginPath();ctx.moveTo(J.an.x-nx*0.07,J.an.y-ny*0.07);ctx.lineTo(J.tip.x-nx*0.24,J.tip.y-ny*0.24);ctx.quadraticCurveTo(J.tip.x+dx/l*0.1,J.tip.y+dy/l*0.1,J.tip.x+nx*0.13,J.tip.y+ny*0.13);ctx.lineTo(J.an.x+nx*0.04,J.an.y+ny*0.04);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#CE0037';ctx.lineWidth=0.022;ctx.beginPath();ctx.moveTo(J.an.x-nx*0.07,J.an.y-ny*0.07);ctx.lineTo(J.tip.x-nx*0.24,J.tip.y-ny*0.24);ctx.stroke();
+ ctx.fillStyle='#2a2a2a';ctx.beginPath();ctx.ellipse(J.an.x+dx/l*0.09,J.an.y+dy/l*0.09,0.12,0.085,Math.atan2(dy,dx),0,7);ctx.fill();
+ seg(J.hip,J.kn,0.15,skin);seg(J.kn,J.an,0.11,skin);
+ ctx.strokeStyle=suit;ctx.lineWidth=0.3;ctx.beginPath();ctx.moveTo(J.hip.x-0.1,J.hip.y);ctx.lineTo(J.sh.x,J.sh.y);ctx.stroke();
+ const el=lerp(J.sh,J.hand,0.5);el.y+=0.05;seg(J.sh,el,0.09,skin);seg(el,J.hand,0.08,skin);
+ const dir=Math.atan2(J.hd.y-J.sh.y,J.hd.x-J.sh.x);ctx.save();ctx.translate(J.hd.x,J.hd.y);ctx.rotate(dir);
+ ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(0,0,0.13,0.11,0,0,7);ctx.fill();ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(-0.02,-0.03,0.13,0.09,0,Math.PI,0);ctx.fill();
+ ctx.fillStyle='#111';ctx.fillRect(0.05,0.03,0.09,0.06);ctx.fillStyle='#7fd4ff';ctx.fillRect(0.085,0.04,0.05,0.04);ctx.restore();
+ const c2=Math.cos(dir),s2=Math.sin(dir),m={x:J.hd.x+0.12*c2-0.09*s2,y:J.hd.y+0.12*s2+0.09*c2};
+ // tank: held level like a torpedo nose (points along the body line)
+ if(noTank)return m;const bx=J.sh.x-J.hip.x,by=J.sh.y-J.hip.y,bl=Math.hypot(bx,by)||1;drawTank({x:J.hand.x-bx/bl*0.08,y:J.hand.y-by/bl*0.08},{x:J.hand.x+bx/bl*0.3,y:J.hand.y+by/bl*0.3},m)}
+function turnPose(cam){const g=G,st=turnState(g.turn);
+ ctx.save();ctx.translate((st.hip-cam)*s,surfY+g.y*s);if(st.flip)ctx.scale(-1,1);ctx.rotate(st.rot);if(st.flipY)ctx.scale(1,-1);ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
+ const m=skel(st.J,true),M=ctx.getTransform(),hs=M.transformPoint(new DOMPoint(st.J.hand.x,st.J.hand.y)),ms=M.transformPoint(new DOMPoint(m.x,m.y));ctx.restore();
+ /* tank drawn in world space so its rotation leads the body; angle 0 = toward the wall, PI = away */
+ ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);const hx=hs.x/dpr,hy=hs.y/dpr;ctx.translate(hx,hy);ctx.scale(s,s);ctx.lineCap='round';
+ const a=st.tankA,c=Math.cos(a),n=Math.sin(a)*0.25;drawTank({x:-0.08*c,y:-0.08*n},{x:0.3*c,y:0.3*n},{x:(ms.x/dpr-hx)/s,y:(ms.y/dpr-hy)/s});ctx.restore()}
+function swimmer(px,py){const g=G,surf=g.state==='swim',done=g.state==='done';
+ ctx.save();ctx.translate(px,py);if(g.dir<0)ctx.scale(-1,1);ctx.rotate(g.ang);ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
+ const p=g.p,w=done?0.25:1,E=EVENTS[ev],mono=E.fin==='mono';
+ const skin='#e0ac83',skin2='#b98a68',suit='#CE0037';
+ const seg=(a,b,wd,c)=>{ctx.strokeStyle=c;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()};
+ /* Core-driven dolphin wave (monofin events): y(x)=A(x)*sin(p - K*(0.62-x)).
+    Amplitude grows from chest -> hips -> knees -> feet; head and arms stay nearly still. */
+ const K=2.1,amp=x=>x>0.3?0.012:x>0?0.012+(0.3-x)*0.15:0.057+(-x)*0.16 /* chest rigid, hips moderate, feet/fin max */;
+ const wv=x=>mono?amp(x)*Math.sin(p-K*(0.62-x))*w:0, P=x=>({x,y:wv(x)});
+ const lg=g.lunge||0,hand={x:1.52+0.2*lg,y:wv(1.52)+0.03*lg},hd={x:0.9,y:wv(0.9)-0.02},sh=P(0.62),waist=P(0.3),hip=P(0),kn=P(-0.46),an=P(-0.92);
+ // fin: follows shin line (pointed foot); blade flexes opposite to foot velocity with lag (water pressure).
+ // 3/4 tilt: blade drawn as a planform that widens toward the tip so the viewer sees its surface.
+ function fin(kn,an,footVelPhase,o){const dx=an.x-kn.x,dy=an.y-kn.y,d=Math.hypot(dx,dy)||1,ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
+  const foot={x:an.x+ux*0.12,y:an.y+uy*0.12},len=o.len,flex=-Math.cos(footVelPhase-0.55)*o.flex*w;
+  const C=t=>({x:foot.x+ux*len*t,y:foot.y+uy*len*t+flex*t*t});
+  const N=12,top=[],bot=[];for(let i=0;i<=N;i++){const t=i/N,c=C(t),hw=o.w0+(o.w1-o.w0)*Math.pow(t,0.8);top.push({x:c.x-nx*hw*1.0,y:c.y-ny*hw*1.0});bot.push({x:c.x+nx*hw*0.55,y:c.y+ny*hw*0.55})}
+  ctx.fillStyle=o.col;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));
+  if(o.mono){const tc=C(1);ctx.quadraticCurveTo(tc.x-ux*0.12,tc.y-uy*0.12,bot[N].x,bot[N].y)}else ctx.lineTo(bot[N].x,bot[N].y);
+  for(let i=N;i>=0;i--)ctx.lineTo(bot[i].x,bot[i].y);ctx.closePath();ctx.fill();
+  // lighter top face = tilted surface toward the viewer
+  ctx.fillStyle=o.face;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));for(let i=N;i>=0;i--){const c=C(i/N);ctx.lineTo(c.x,c.y)}ctx.closePath();ctx.fill();
+  ctx.strokeStyle=o.edge;ctx.lineWidth=0.02;ctx.beginPath();top.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();
+  seg(an,foot,0.075,o.skin);ctx.fillStyle='#2a2a2a';ctx.beginPath();ctx.ellipse(an.x+ux*0.09,an.y+uy*0.09,0.12,o.mono?0.085:0.06,Math.atan2(uy,ux),0,7);ctx.fill()}
+ const armL=0.66;
+ function freeArm(a,col){const hx=sh.x+Math.cos(a)*armL,hy=sh.y+Math.sin(a)*armL*0.95,el={x:(sh.x+hx)/2+0.04,y:(sh.y+hy)/2-0.03};seg(sh,el,0.09,col);seg(el,{x:hx,y:hy},0.08,col)}
+ const freestyle=ev==='bifin'&&surf&&!g.touch&&lg<0.35;
+ if(freestyle)freeArm(g.arm+Math.PI,skin2);
+ if(mono){ // far leg slightly behind, both feet together in one foot pocket
+  const o={x:-0.015,y:-0.035};seg({x:hip.x+o.x,y:hip.y+o.y},{x:kn.x+o.x,y:kn.y+o.y},0.14,skin2);seg({x:kn.x+o.x,y:kn.y+o.y},{x:an.x+o.x,y:an.y+o.y},0.1,skin2);
+  seg(hip,kn,0.15,skin);seg(kn,an,0.11,skin);
+  fin(kn,an,p-K*1.54+Math.PI/2,{mono:1,len:0.74,flex:0.22,w0:0.07,w1:0.24,col:'#0d0d0d',face:'#2e2e33',edge:'#CE0037',skin})}
+ else{ // bifin: two separate fins, alternating flutter; far fin offset behind
+  const L=(ph,o)=>{const k={x:-0.46+o.x,y:Math.sin(ph)*0.12*w+o.y},a={x:-0.92+o.x,y:Math.sin(ph-0.7)*0.2*w+o.y};return {k,a}};
+  const far=L(p+Math.PI,{x:-0.02,y:-0.05}),near=L(p,{x:0,y:0});
+  seg({x:-0.02,y:-0.05},far.k,0.14,skin2);seg(far.k,far.a,0.1,skin2);fin(far.k,far.a,p+Math.PI-0.7+Math.PI/2,{len:0.6,flex:0.24,w0:0.035,w1:0.09,col:'#050505',face:'#26262b',edge:'#444',skin:skin2});
+  seg(hip,near.k,0.15,skin);seg(near.k,near.a,0.11,skin);fin(near.k,near.a,p-0.7+Math.PI/2,{len:0.6,flex:0.24,w0:0.035,w1:0.09,col:'#111',face:'#3a3a40',edge:'#CE0037',skin})}
+ // torso follows the wave: chest -> waist -> hips
+ ctx.strokeStyle=suit;ctx.lineWidth=0.3;ctx.beginPath();ctx.moveTo(hip.x-0.12,hip.y);ctx.quadraticCurveTo(waist.x,waist.y,sh.x,sh.y);ctx.stroke();
+ if(freestyle)freeArm(g.arm,skin);
+ else{seg(sh,hand,0.085,skin);ctx.fillStyle=skin;ctx.beginPath();ctx.arc(hand.x,hand.y,0.05,0,7);ctx.fill()}
+ ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(hd.x,hd.y,0.13,0.11,0,0,7);ctx.fill();
+ ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(hd.x-0.02,hd.y-0.03,0.13,0.09,0,Math.PI,0);ctx.fill();ctx.fillStyle='#CE0037';ctx.fillRect(hd.x-0.1,hd.y-0.05,0.08,0.025);
+ ctx.fillStyle='#111';ctx.fillRect(hd.x+0.05,hd.y+0.03,0.09,0.06);ctx.fillStyle='#7fd4ff';ctx.fillRect(hd.x+0.085,hd.y+0.04,0.05,0.04);
+ if(E.tank){const lw=g.lower||0;if(lw<=0)drawTank({x:hand.x-0.08,y:hand.y},{x:hand.x+0.3,y:hand.y},{x:hd.x+0.12,y:hd.y+0.09});
+  else{/* lower the tank to the side/below the chest, held by the far hand; near hand reaches for the wall */
+   const th=lerp(hand,{x:0.5,y:0.42},Math.min(1,lw*1.3)),a=Math.PI/2*lw;seg(sh,{x:(sh.x+th.x)/2,y:(sh.y+th.y)/2+0.04},0.085,skin2);seg({x:(sh.x+th.x)/2,y:(sh.y+th.y)/2+0.04},th,0.08,skin2);
+   drawTank({x:th.x-0.08*Math.cos(a),y:th.y-0.08*Math.sin(a)},{x:th.x+0.3*Math.cos(a),y:th.y+0.3*Math.sin(a)},{x:hd.x+0.12,y:hd.y+0.09})}}
+ if(E.snorkel){ctx.strokeStyle='#ffcc00';ctx.lineWidth=0.045;ctx.beginPath();ctx.moveTo(hd.x+0.1,hd.y+0.1);ctx.quadraticCurveTo(hd.x+0.2,hd.y+0.02,hd.x+0.12,hd.y-0.14);ctx.lineTo(hd.x+0.08,hd.y-0.25);ctx.stroke();ctx.fillStyle='#CE0037';ctx.fillRect(hd.x+0.05,hd.y-0.28,0.06,0.04)}
+ ctx.restore()}
+function hud(cam){const g=G,L=T[lang],m=W<600;ctx.font=`900 italic ${m?22:28}px Saira`;ctx.textAlign='left';ctx.fillStyle='#F1F0EF';ctx.fillText(fmt(g.t),14,m?30:38);
+ const EL=EVENTS[ev].len,fr=g.x+FR()*g.dir,d=Math.max(0,Math.min(EL,g.dir<0?EVENTS[ev].pool*2-fr:g.state==='ready'?0:fr));ctx.font='800 12px Manrope';ctx.fillStyle='#9aa3a8';ctx.fillText(d.toFixed(1)+' / '+EL+'m',14,m?48:58);
+ const ph=g.state==='swim'?L.surf:(g.state==='under'||g.state==='dive')?(ev==='apnea'?L.breath:L.under):'';ctx.textAlign='right';ctx.fillStyle='#ff4d73';ctx.fillText(ph,W-14,24);
+ // progress bar
+ const bw=Math.min(260,W*0.4),bx=W-14-bw,by=34;ctx.fillStyle='#ffffff22';ctx.fillRect(bx,by,bw,6);ctx.fillStyle='#CE0037';ctx.fillRect(bx,by,bw*d/EL,6);ctx.fillStyle='#fff';if(EVENTS[ev].uw<EVENTS[ev].len)ctx.fillRect(bx+bw*(15/EL)-1,by-3,2,12);
+ if(ev==='apnea'){ctx.fillStyle='#ffffff22';ctx.fillRect(bx,by+14,bw,6);ctx.fillStyle=g.breath>0.3?'#7fd4ff':'#ff4d73';ctx.fillRect(bx,by+14,bw*g.breath,6);ctx.fillStyle='#9aa3a8';ctx.font='700 10px Manrope';ctx.fillText('O₂',bx-6,by+20)}}
+let last=performance.now();function loop(n){const dt=Math.min(0.05,(n-last)/1000);last=n;step(dt);draw();requestAnimationFrame(loop)}
+const ev0=new URLSearchParams(location.search).get('event');if(EVENTS[ev0])ev=ev0;
+size();reset();requestAnimationFrame(loop);
+</script>
+</body></html>
